@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -35,15 +37,17 @@ class App extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
 
-              }
-
-              final isAuthenticated = snapshot.data as bool;
-
-              if (isAuthenticated) {
-                return SeedScreen();
               } else {
-                return const SingInSignUpScreen();
+                final isAuthenticated = snapshot.data as bool;
+
+                if (isAuthenticated) {
+                  return SeedScreen();
+                } else {
+                  return const SingInSignUpScreen();
+                }
+
               }
+
             },
           ),
         ),
