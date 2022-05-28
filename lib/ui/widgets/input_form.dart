@@ -1,12 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../providers/authentication_provider.dart';
-import '../../repository/authentication_repository.dart';
-import '../screens/seed_screen.dart';
+import '../../providers/auth_provider.dart';
 
 class InputForm extends StatefulWidget {
   const InputForm({Key? key}) : super(key: key);
@@ -20,43 +15,25 @@ class _InputFormState extends State<InputForm> {
   String? _userEmail;
   String? _userFullName;
 
-  Future<void> _saveUserIdWithinSharedPreference(String id) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userId', id);
-  }
-
   Future<void> _login() async {
-    final user =
-        await Provider.of<AuthenticationProvider>(context, listen: false)
-            .login(_userEmail as String);
-
-    // TODO Test if the replacement is working fine
-    if (user != null) {
-      await _saveUserIdWithinSharedPreference(user.id);
-      Navigator.of(context)
-      .pushReplacement(
-      MaterialPageRoute(builder: (_) => SeedScreen(user.id)));
-    }
+    await Provider.of<AuthProvider>(context, listen: false)
+        .login(_userEmail as String);
   }
 
   Future<void> _signUp() async {
-    final userId = await Provider.of<AuthenticationProvider>(
-      context,
-      listen: false,
-    ).signup(
+    await Provider.of<AuthProvider>(context, listen: false).signup(
       _userFullName as String,
       _userEmail as String,
     );
 
-    if (userId != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Conta criada com sucesso'),
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Conta criada com sucesso',
+          textAlign: TextAlign.center,
         ),
-      );
-      Provider.of<AuthenticationProvider>(context, listen: false)
-          .changeAuthMode();
-    }
+      ),
+    );
   }
 
   Future<void> _submitForm(BuildContext context, bool isLogin) async {
@@ -75,12 +52,15 @@ class _InputFormState extends State<InputForm> {
         await _signUp();
       }
 
-    } on Exception catch (error) {
+      Navigator.of(context).pushReplacementNamed('/');
+
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error.toString()),
         ),
       );
+
     }
     // TODO
     // 500
@@ -90,7 +70,7 @@ class _InputFormState extends State<InputForm> {
 
   @override
   Widget build(BuildContext context) {
-    final isLogin = Provider.of<AuthenticationProvider>(context).isLogin;
+    final isLogin = Provider.of<AuthProvider>(context).isLogin;
 
     return Form(
       key: _formKey,
@@ -98,7 +78,6 @@ class _InputFormState extends State<InputForm> {
         child: Column(
           children: [
             if (!isLogin)
-
               Padding(
                 padding: const EdgeInsets.all(32),
                 child: TextFormField(
@@ -118,7 +97,6 @@ class _InputFormState extends State<InputForm> {
                   },
                 ),
               ),
-
             Padding(
               padding: const EdgeInsets.all(32),
               child: TextFormField(
@@ -161,7 +139,7 @@ class _InputFormState extends State<InputForm> {
                 style: const TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Provider.of<AuthenticationProvider>(context, listen: false)
+                Provider.of<AuthProvider>(context, listen: false)
                     .changeAuthMode();
               },
             ),
