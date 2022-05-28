@@ -12,12 +12,12 @@ class AuthenticationRepository {
 
   final AuthenticationService _authenticationService;
 
-  Future<User?> login(String email) async {
+  Future<User> login(String email) async {
     return _authenticationService.login(email);
   }
 
   // TODO Problems with internet connection
-  Future<String?> signup(String fullName, String email) async {
+  Future<User> signup(String fullName, String email) async {
     return _authenticationService.signup(fullName, email);
   }
 }
