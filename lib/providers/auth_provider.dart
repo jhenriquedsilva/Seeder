@@ -49,4 +49,14 @@ class AuthProvider with ChangeNotifier {
     isLogin = !isLogin;
     notifyListeners();
   }
+
+  void changeToLoginMode() {
+    isLogin = true;
+    notifyListeners();
+  }
+
+  void logout() {
+    _prefs.clear();
+    notifyListeners();
+  }
 }

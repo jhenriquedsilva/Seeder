@@ -52,8 +52,6 @@ class _InputFormState extends State<InputForm> {
         await _signUp();
       }
 
-      Navigator.of(context).pushReplacementNamed('/');
-
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
