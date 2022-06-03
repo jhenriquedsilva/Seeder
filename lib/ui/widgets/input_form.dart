@@ -15,6 +15,17 @@ class _InputFormState extends State<InputForm> {
   String? _userEmail;
   String? _userFullName;
 
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
   Future<void> _login() async {
     await Provider.of<AuthProvider>(context, listen: false)
         .login(_userEmail as String);
@@ -26,14 +37,7 @@ class _InputFormState extends State<InputForm> {
       _userEmail as String,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Conta criada com sucesso',
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
+    showSnackBar(context, 'Conta criada com sucesso');
   }
 
   Future<void> _submitForm(BuildContext context, bool isLogin) async {
@@ -53,17 +57,8 @@ class _InputFormState extends State<InputForm> {
       }
 
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-        ),
-      );
-
+      showSnackBar(context, error.toString());
     }
-    // TODO
-    // 500
-    // time out
-    // 503
   }
 
   @override
