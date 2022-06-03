@@ -39,4 +39,31 @@ class SeedProvider with ChangeNotifier {
         )
         .toList();
   }
+
+  Future<void> insert(
+    String seedName,
+    String manufacturerName,
+    DateTime manufacturedAt,
+    DateTime expiresIn,
+  ) async {
+    await _seedRepository.insert(
+      seedName,
+      manufacturerName,
+      manufacturedAt,
+      expiresIn,
+    );
+  }
+
+  Future<void> synchronize() async {
+    await _seedRepository.synchronizeSeeds();
+    await getSeeds();
+  }
+
+  Future<void> clear() async {
+    await _seedRepository.clear();
+  }
+
+  Future<bool> areThereAnyNonSynchronized() async {
+    return _seedRepository.areThereAnyNonSynchronized();
+  }
 }
