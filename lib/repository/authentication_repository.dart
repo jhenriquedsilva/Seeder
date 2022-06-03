@@ -1,16 +1,21 @@
-import 'dart:convert';
+import 'package:seed/preferences/local_storage_service.dart';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-
-import '../models/user.dart';
 import '../network/authentication_service.dart';
 
-class AuthenticationRepository {
-  AuthenticationRepository(AuthenticationService authenticationService)
-      : _authenticationService = authenticationService;
+class AuthRepository {
+  AuthRepository(
+    AuthService authService,
+    LocalStorageService localStorageService,
+  )   : _authService = authService,
+        _localStorageService = localStorageService;
 
-  final AuthenticationService _authenticationService;
+  final AuthService _authService;
+  final LocalStorageService _localStorageService;
+
+  Future<void> login(String email) async {
+    final user = await _authService.login(email);
+    await _localStorageService.save(user);
+  }
 
   Future<User> login(String email) async {
     return _authenticationService.login(email);
