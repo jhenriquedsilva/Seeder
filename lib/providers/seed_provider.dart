@@ -38,6 +38,7 @@ class SeedProvider with ChangeNotifier {
       return;
     }
     seeds = databaseSeedToSeed(databaseSeeds);
+    notifyListeners();
   }
 
   List<Seed> databaseSeedToSeed(List<DatabaseSeed> databaseSeeds) {
