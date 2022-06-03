@@ -14,11 +14,7 @@ class AuthProvider with ChangeNotifier {
 
   late AuthRepository _authRepository;
 
-
-
-  static const USER_ID = 'user_id';
   var isLogin = true;
-  late SharedPreferences _prefs;
 
   Future<bool> isAuthenticated() async {
     final userId = await _authRepository.getId();
@@ -40,7 +36,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeToLoginMode() {
+  void _changeToLoginMode() {
     isLogin = true;
     notifyListeners();
   }
