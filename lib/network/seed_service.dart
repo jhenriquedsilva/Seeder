@@ -46,7 +46,7 @@ class SeedService {
       } else if (response.statusCode == 503) {
         throw UnavailableServerException();
       } else {
-        throw Exception();
+        throw Exception('Erro no servidor. Tente novamente mais tarde');
       }
     } on SocketException {
       throw Exception('Você não possui internet');
