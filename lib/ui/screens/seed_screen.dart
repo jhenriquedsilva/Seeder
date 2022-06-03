@@ -4,11 +4,16 @@ import 'package:seed/providers/auth_provider.dart';
 import 'package:seed/providers/seed_provider.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
 
-class SeedsScreen extends StatelessWidget {
+class SeedsScreen extends StatefulWidget {
   static const routeName = '/seed';
 
   const SeedsScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SeedsScreen> createState() => _SeedsScreenState();
+}
+
+class _SeedsScreenState extends State<SeedsScreen> {
   void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
