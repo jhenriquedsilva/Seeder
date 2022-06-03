@@ -32,7 +32,7 @@ class SeedService {
         onTimeout: () => throw TimeExceededException(),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final fetchedSeeds = json.decode(response.body) as List<dynamic>;
         if (fetchedSeeds.isEmpty) {
           return [];
@@ -41,6 +41,10 @@ class SeedService {
         return fetchedSeeds.map((seedJson) {
           return NetworkSeed.fromJson(seedJson);
         }).toList();
+      } else if (response.statusCode >= 400 && response.statusCode < 500) {
+        throw Exception('Um erro ocorreu. Tente novamente');
+      } else if (response.statusCode == 503) {
+        throw UnavailableServerException();
       } else {
         throw Exception();
       }
@@ -70,9 +74,13 @@ class SeedService {
           );
 
           if (response.statusCode >= 400 && response.statusCode < 500) {
-            throw Exception('${response.body}');
-          } else if (response.statusCode >= 500 && response.statusCode < 600) {
-            throw Exception('${response.body}');
+            throw Exception('Um erro ocorreu. Tente novamente');
+
+          } else if (response.statusCode == 503) {
+            throw UnavailableServerException();
+
+          } else {
+            throw Exception('Erro no servidor. Tente novamente mais tarde');
           }
         },
       );
