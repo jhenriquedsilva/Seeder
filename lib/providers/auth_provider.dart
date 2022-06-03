@@ -1,24 +1,18 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
-import 'package:seed/models/user.dart';
 import 'package:seed/network/authentication_service.dart';
+import 'package:seed/preferences/user_shared_preferences_service.dart';
 import 'package:seed/repository/authentication_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
-
   AuthProvider() {
-    _authenticationService = AuthenticationService();
-    _authenticationRepository =
-        AuthenticationRepository(_authenticationService);
+    _authRepository = AuthRepository(
+      AuthService(),
+      UserSharedPreferencesService(),
+    );
   }
 
-  late var _authenticationService = AuthenticationService();
-  late var _authenticationRepository =
-      AuthenticationRepository(_authenticationService);
-
+  late AuthRepository _authRepository;
 
 
 
@@ -27,21 +21,17 @@ class AuthProvider with ChangeNotifier {
   late SharedPreferences _prefs;
 
   Future<bool> isAuthenticated() async {
-    final prefs = await SharedPreferences.getInstance();
-    _prefs = prefs;
-    final userId = prefs.getString(USER_ID);
-    return  userId != null;
+    final userId = await _authRepository.getId();
+    return userId != null;
   }
 
   Future<void> login(String email) async {
-    final user = await _authenticationRepository.login(email);
-    _prefs.setString(USER_ID, user.id);
+    await _authRepository.login(email);
     notifyListeners();
   }
 
   Future<void> signup(String fullName, String email) async {
-    final user = await _authenticationRepository.signup(fullName, email);
-    _prefs.setString(USER_ID, user.id);
+    await _authRepository.signup(fullName, email);
     notifyListeners();
   }
 
