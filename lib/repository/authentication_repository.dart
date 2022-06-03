@@ -17,12 +17,17 @@ class AuthRepository {
     await _localStorageService.save(user);
   }
 
-  Future<User> login(String email) async {
-    return _authenticationService.login(email);
+  Future<void> signup(String fullName, String email) async {
+    final user = await _authService.signup(fullName, email);
+    _localStorageService.save(user);
   }
 
-  // TODO Problems with internet connection
-  Future<User> signup(String fullName, String email) async {
-    return _authenticationService.signup(fullName, email);
+  Future<String?> getId() async {
+    final userId = await _localStorageService.getId();
+    return userId;
+  }
+
+  Future<void> delete() async {
+    await _localStorageService.delete();
   }
 }
