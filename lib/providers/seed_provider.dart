@@ -31,11 +31,11 @@ class SeedProvider with ChangeNotifier {
     return databaseSeeds
         .map(
           (databaseSeed) => Seed(
-            name: databaseSeed.name,
-            manufacturer: databaseSeed.manufacturer,
-            manufacturedAt: databaseSeed.manufacturedAt,
-            expiresIn: databaseSeed.expiresIn,
-          ),
+              name: databaseSeed.name,
+              manufacturer: databaseSeed.manufacturer,
+              manufacturedAt: databaseSeed.manufacturedAt,
+              expiresIn: databaseSeed.expiresIn,
+              synchronized: databaseSeed.synchronized),
         )
         .toList();
   }
