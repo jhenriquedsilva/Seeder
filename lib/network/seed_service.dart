@@ -16,7 +16,7 @@ class SeedService {
   final LocalStorageService _localStorageService;
   final baseUrl =
       'https://learning-data-sync-mobile.herokuapp.com/datasync/api/seed';
-  static const USER_ID = 'user_id';
+  static const userId = 'user_id';
   final headers = {
     'content-type': 'application/json',
     'accept': 'application/json',
