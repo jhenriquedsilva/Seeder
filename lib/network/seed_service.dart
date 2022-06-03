@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:seed/exceptions/time_exceeded_exception.dart';
@@ -42,6 +44,9 @@ class SeedService {
       } else {
         throw Exception();
       }
+    } on SocketException catch (error) {
+      throw Exception('Você não possui internet');
+
     } catch (error) {
       rethrow;
     }
@@ -71,6 +76,9 @@ class SeedService {
           }
         },
       );
+
+    } on SocketException catch (error) {
+      throw Exception('Você não possui internet');
     } catch (error) {
       rethrow;
     }
