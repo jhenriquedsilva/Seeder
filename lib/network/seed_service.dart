@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:seed/exceptions/time_exceeded_exception.dart';
+import 'package:seed/exceptions/unavailable_server.dart';
 import 'package:seed/preferences/local_storage_service.dart';
 
 import '../models/network_seed.dart';
@@ -22,7 +24,11 @@ class SeedService {
     final url = Uri.parse('$baseUrl/$userId');
 
     try {
-      final response = await get(url);
+      // await Future.delayed(const Duration(seconds: 5,),() => throw TimeExceededException());
+      final response = await get(url).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeExceededException(),
+      );
 
       if (response.statusCode == 200) {
         final fetchedSeeds = json.decode(response.body) as List<dynamic>;
@@ -53,6 +59,9 @@ class SeedService {
             url,
             body: networkSeed.toJson(userId),
             headers: headers,
+          ).timeout(
+            const Duration(seconds: 30),
+            onTimeout: () => throw TimeExceededException(),
           );
 
           if (response.statusCode >= 400 && response.statusCode < 500) {
