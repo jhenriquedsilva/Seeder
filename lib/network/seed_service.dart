@@ -48,7 +48,7 @@ class SeedService {
       } else {
         throw Exception();
       }
-    } on SocketException catch (error) {
+    } on SocketException {
       throw Exception('Você não possui internet');
 
     } catch (error) {
@@ -85,7 +85,7 @@ class SeedService {
         },
       );
 
-    } on SocketException catch (error) {
+    } on SocketException {
       throw Exception('Você não possui internet');
     } catch (error) {
       rethrow;
