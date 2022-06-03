@@ -41,8 +41,8 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() {
-    _prefs.clear();
-    notifyListeners();
+  Future<void> logout() async {
+    await _authRepository.delete();
+    _changeToLoginMode();
   }
 }
