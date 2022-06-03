@@ -87,7 +87,7 @@ class SeedRepository {
         await _seederDatabase.getNonSynchronized();
 
     if (nonSynchronizedDatabaseSeeds.isEmpty) {
-      throw NoNonSynchroziedSeedsException();
+      throw NoNonSynchronizedSeedsException();
     }
 
     await _seedService
