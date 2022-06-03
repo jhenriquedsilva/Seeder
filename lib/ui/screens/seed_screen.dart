@@ -35,14 +35,12 @@ class _SeedsScreenState extends State<SeedsScreen> {
             icon: const Icon(Icons.sync),
             onPressed: () async {
               try {
-
                 await Provider.of<SeedProvider>(context, listen: false)
                     .synchronize();
                 showSnackBar(context, 'Sementes sincronizadas com sucesso');
               } catch (error) {
                 showSnackBar(context, error.toString());
               }
-
             },
           ),
           IconButton(
@@ -107,7 +105,36 @@ class _SeedsScreenState extends State<SeedsScreen> {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
+
+                // If a time out exception is thrown
+              } else if (snapshot.hasError) {
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          snapshot.error.toString(),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {});
+                          },
+                          child: const Text(
+                            'Recarregar',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        margin: const EdgeInsets.all(16),
+                      )
+                    ],
+                  ),
+                );
               } else {
+                // TODO Create a new widget for this list
                 return Consumer<SeedProvider>(
                   builder: (context, seedProvider, _) => Expanded(
                     child: ListView.builder(
