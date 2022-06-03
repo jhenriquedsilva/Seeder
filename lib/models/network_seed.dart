@@ -1,12 +1,11 @@
 class NetworkSeed {
-
   const NetworkSeed({
     required this.id,
     required this.name,
     required this.manufacturer,
     required this.manufacturedAt,
     required this.expiresIn,
-    required this.userId,
+    required this.createdAt,
   });
 
   final String id;
