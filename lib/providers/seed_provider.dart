@@ -20,26 +20,26 @@ class SeedProvider with ChangeNotifier {
   }
 
   late SeedRepository _seedRepository;
-  late List<Seed> seeds;
+  late List<Seed> allSeeds;
 
   Future<void> cacheSeeds() async {
     final databaseSeeds = await _seedRepository.cacheSeeds();
     if (databaseSeeds.isEmpty) {
-      seeds = [];
+      allSeeds = [];
       notifyListeners();
       return;
     }
-    seeds = databaseSeedToSeed(databaseSeeds);
+    allSeeds = databaseSeedToSeed(databaseSeeds);
   }
 
   Future<void> getSeeds() async {
     final databaseSeeds = await _seedRepository.getSeeds();
     if (databaseSeeds.isEmpty) {
-      seeds = [];
+      allSeeds = [];
       notifyListeners();
       return;
     }
-    seeds = databaseSeedToSeed(databaseSeeds);
+    allSeeds = databaseSeedToSeed(databaseSeeds);
     notifyListeners();
   }
 
