@@ -138,9 +138,9 @@ class _SeedsScreenState extends State<SeedsScreen> {
                 return Consumer<SeedProvider>(
                   builder: (context, seedProvider, _) => Expanded(
                     child: ListView.builder(
-                      itemCount: seedProvider.seeds.length,
+                      itemCount: seedProvider.allSeeds.length,
                       itemBuilder: (_, index) {
-                        final seed = seedProvider.seeds[index];
+                        final seed = seedProvider.allSeeds[index];
                         return Column(
                           children: [
                             ListTile(
@@ -165,12 +165,6 @@ class _SeedsScreenState extends State<SeedsScreen> {
               }
             },
           ),
-          // const Expanded(
-          //   // 3
-          //   child: Center(
-          //     child: Text('Você não possui sementes'),
-          //   ),
-          // )
         ],
       ),
       floatingActionButton: FloatingActionButton(
