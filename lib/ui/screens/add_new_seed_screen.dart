@@ -58,10 +58,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     } catch (error) {
       showSnackBar(context, error.toString());
     }
-    // TODO
-    // 500
-    // time out
-    // 503
+
   }
 
   @override
