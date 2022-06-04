@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/providers/auth_provider.dart';
 import 'package:seed/providers/seed_provider.dart';
+import 'package:seed/ui/screens/add_new_seed_screen.dart';
 import 'package:seed/ui/screens/sign_in_sign_up_screen.dart';
 import 'package:seed/ui/screens/seed_screen.dart';
 
@@ -49,6 +50,9 @@ class App extends StatelessWidget {
               }
             },
           ),
+          routes: {
+            AddNewSeedScreen.routName: (_) => const AddNewSeedScreen()
+          },
         ),
       ),
     );

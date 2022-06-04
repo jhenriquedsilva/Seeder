@@ -3,22 +3,25 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:uuid/uuid.dart';
 
+import '../exceptions/email_already_exist_exception.dart';
+import '../exceptions/email_does_not_exist_exception.dart';
+import '../exceptions/email_not_valid_exception.dart';
 import '../models/user.dart';
 
-class AuthenticationService {
-  final _baseUrl = "https://learning-data-sync-mobile.herokuapp.com/datasync/api";
+class AuthService {
+  final _baseUrl = 'https://learning-data-sync-mobile.herokuapp.com/datasync/api';
 
   Future<User> login(String email) async  {
 
-    final url = Uri.parse("$_baseUrl/user/auth");
+    final url = Uri.parse('$_baseUrl/user/auth');
     final response = await post(
       url,
       body: json.encode(
-        {"email": email},
+        {'email': email},
       ),
       headers: {
-        "content-type": "application/json",
-        "accept": "application/json",
+        'content-type': 'application/json',
+        'accept': 'application/json',
       }
     );
 
@@ -29,7 +32,7 @@ class AuthenticationService {
       throw EmailDoesNotExistException();
 
     } else if (response.statusCode >= 400 && response.statusCode < 500) {
-      throw Exception("Dados inválidos");
+      throw Exception('Dados inválidos');
 
     } else if (response.statusCode >= 500 && response.statusCode < 600) {
       throw Exception('Erro no servidor');
@@ -42,17 +45,17 @@ class AuthenticationService {
 
   Future<User> signup(String fullName, String email) async {
 
-    final url = Uri.parse("$_baseUrl/user");
+    final url = Uri.parse('$_baseUrl/user');
     final id = const Uuid().v4().toString();
     final userData = {
-      "id": id,
-      "fullName": fullName,
-      "email": email,
+      'id': id,
+      'fullName': fullName,
+      'email': email,
     };
 
     final headers = {
-      "content-type": "application/json",
-      "accept": "application/json",
+      'content-type': 'application/json',
+      'accept': 'application/json',
     };
 
     try {
@@ -73,7 +76,7 @@ class AuthenticationService {
         throw EmailAlreadyExistException();
 
       } else if (response.statusCode >= 400 && response.statusCode < 500) {
-        throw Exception("Dados inválidos");
+        throw Exception('Dados inválidos');
 
       } else if (response.statusCode >= 500 && response.statusCode < 600) {
         throw Exception('Erro no servidor');
@@ -86,27 +89,5 @@ class AuthenticationService {
     } catch (error) {
       rethrow;
     }
-  }
-}
-
-class EmailDoesNotExistException implements Exception {
-  @override
-  String toString() {
-    return 'Este email não está cadastrado';
-  }
-
-}
-
-class EmailAlreadyExistException implements Exception {
-  @override
-  String toString() {
-    return 'Este email já está cadastrado';
-  }
-}
-
-class EmailNotValidException implements Exception {
-  @override
-  String toString() {
-    return 'Email inválido';
   }
 }

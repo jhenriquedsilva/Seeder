@@ -3,27 +3,28 @@ import 'package:seed/models/database_seed.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SeederDatabase {
-  Future<Database> getInstance() async {
+  Future<Database> _getInstance() async {
     return openDatabase(
         join(
           await getDatabasesPath(),
-          'seeder_databse.db',
+          'seeder_database.db',
         ), onCreate: (seedDatabase, version) {
       return seedDatabase.execute(
         'CREATE TABLE seeds('
-        'id TEXT PRIMARY KEY, '
-        'name TEXT, '
-        'manufacturer TEXT, '
-        'manufacturedAt TEXT, '
-        'expiresIn TEXT, '
-        'synchronized INTEGER'
-        ')',
+            'id TEXT PRIMARY KEY, '
+            'name TEXT NOT NULL, '
+            'manufacturer TEXT NOT NULL, '
+            'manufacturedAt TEXT NOT NULL, '
+            'expiresIn TEXT NOT NULL, '
+            'createdAt TEXT NOT NULL, '
+            'synchronized INTEGER NOT NULL'
+            ')',
       );
     }, version: 1);
   }
 
-  Future<void> insertSeed(DatabaseSeed databaseSeed) async {
-    final db = await getInstance();
+  Future<void> insert(DatabaseSeed databaseSeed) async {
+    final db = await _getInstance();
 
     await db.insert(
       'seeds',
@@ -32,28 +33,29 @@ class SeederDatabase {
     );
   }
 
-  Future<List<DatabaseSeed>> getAllSeeds() async {
-    final db = await getInstance();
+  Future<void> update(DatabaseSeed databaseSeed) async {
+    final db = await _getInstance();
+
+    await db.update(
+      'seeds',
+      databaseSeed.toMap(),
+      where: 'id = ?',
+      whereArgs: [databaseSeed.id],
+    );
+  }
+
+  Future<List<DatabaseSeed>> getAll() async {
+    final db = await _getInstance();
 
     final List<Map<String, dynamic>> maps = await db.query('seeds');
 
-    final list = List.generate(maps.length, (index) {
-      return DatabaseSeed(
-        id: maps[index]['id'],
-        name: maps[index]['name'],
-        manufacturer: maps[index]['manufacturer'],
-        manufacturedAt: maps[index]['manufacturedAt'],
-        expiresIn: maps[index]['expiresIn'],
-        synchronized: maps[index]['synchronized'] as int ,
-      );
-    });
-
-
-    return list;
+    return List.generate(maps.length, (index) =>
+        DatabaseSeed.fromMap(maps[index])
+    );
   }
 
-  Future<List<DatabaseSeed>> getDesynchronizedSeeds() async {
-    final db = await getInstance();
+  Future<List<DatabaseSeed>> getNonSynchronized() async {
+    final db = await _getInstance();
 
     final List<Map<String, dynamic>> maps = await db.query(
       'seeds',
@@ -61,15 +63,17 @@ class SeederDatabase {
       whereArgs: [0],
     );
 
-    return List.generate(maps.length, (index) {
-      return DatabaseSeed(
-        id: maps[index]['id'],
-        name: maps[index]['name'],
-        manufacturer: maps[index]['manufacturer'],
-        manufacturedAt: maps[index]['manufacturedAt'],
-        expiresIn: maps[index]['expiresIn'],
-        synchronized: maps[index]['synchronized'],
-      );
-    });
+    return List.generate(maps.length, (index) =>
+      DatabaseSeed.fromMap(maps[index])
+    );
   }
+
+  Future<void> clear() async {
+    // Get a reference to the database.
+    final db = await _getInstance();
+
+    // Remove the Dog from the database.
+    await db.delete('seeds');
+  }
+
 }
