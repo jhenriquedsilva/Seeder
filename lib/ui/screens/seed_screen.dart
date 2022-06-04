@@ -70,7 +70,8 @@ class _SeedsScreenState extends State<SeedsScreen> {
                     ),
                   );
 
-                  // TODO Implemet search functionality
+                  // TODO Implement search functionality
+                  // TODO Consider the case when there are no seeds
                   if (isLoggingOut != null && isLoggingOut) {
                     await Provider.of<SeedProvider>(context, listen: false)
                         .clear();
@@ -91,9 +92,11 @@ class _SeedsScreenState extends State<SeedsScreen> {
             padding: const EdgeInsets.all(16),
             child: TextField(
               decoration: const InputDecoration(
-                  border: OutlineInputBorder(), hintText: 'Buscar ...'),
+                border: OutlineInputBorder(),
+                hintText: 'Buscar sementes...',
+              ),
               onChanged: (query) {
-                // 2
+                Provider.of<SeedProvider>(context, listen: false).searchSeeds(query);
               },
             ),
           ),
