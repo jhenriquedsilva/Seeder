@@ -82,4 +82,10 @@ class SeedProvider with ChangeNotifier {
   Future<bool> areThereAnyNonSynchronized() async {
     return _seedRepository.areThereAnyNonSynchronized();
   }
+
+  Future<void> searchSeeds(String query) async {
+    final selectedSeeds = await _seedRepository.search(query);
+    allSeeds = selectedSeeds;
+    notifyListeners();
+  }
 }
