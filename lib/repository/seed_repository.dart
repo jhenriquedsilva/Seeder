@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:seed/database/seeder_database.dart';
+import 'package:seed/models/seed.dart';
 import 'package:uuid/uuid.dart';
 
 import '../database/seeder_database.dart';
@@ -134,5 +135,24 @@ class SeedRepository {
   Future<bool> areThereAnyNonSynchronized() async {
     final nonSynchronizedDatabaseSeeds = await _seederDatabase.getNonSynchronized();
     return nonSynchronizedDatabaseSeeds.isNotEmpty;
+  }
+
+  Future<List<Seed>> search(String query) async {
+    final selectedDatabaseSeeds = await _seederDatabase.search(query);
+    return databaseSeedToSeed(selectedDatabaseSeeds);
+  }
+
+  List<Seed> databaseSeedToSeed(List<DatabaseSeed> databaseSeeds) {
+    return databaseSeeds
+        .map(
+          (databaseSeed) => Seed(
+            name: databaseSeed.name,
+            manufacturer: databaseSeed.manufacturer,
+            manufacturedAt: databaseSeed.manufacturedAt,
+            expiresIn: databaseSeed.expiresIn,
+            synchronized: databaseSeed.synchronized,
+          ),
+        )
+        .toList();
   }
 }

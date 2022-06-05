@@ -69,11 +69,22 @@ class SeederDatabase {
   }
 
   Future<void> clear() async {
-    // Get a reference to the database.
+    final db = await _getInstance();
+    await db.delete('seeds');
+  }
+
+  Future<List<DatabaseSeed>> search(String query) async {
     final db = await _getInstance();
 
-    // Remove the Dog from the database.
-    await db.delete('seeds');
+    final List<Map<String, dynamic>> maps = await db.query(
+      'seeds',
+      where: 'name LIKE ? or manufacturer LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
+    );
+
+    return List.generate(maps.length, (index) =>
+        DatabaseSeed.fromMap(maps[index])
+    );
   }
 
 }
