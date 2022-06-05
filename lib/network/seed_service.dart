@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:seed/exceptions/time_exceeded_exception.dart';
+import 'package:seed/exceptions/unavailable_server.dart';
 import 'package:seed/preferences/local_storage_service.dart';
 
 import '../models/network_seed.dart';
@@ -12,7 +16,7 @@ class SeedService {
   final LocalStorageService _localStorageService;
   final baseUrl =
       'https://learning-data-sync-mobile.herokuapp.com/datasync/api/seed';
-  static const USER_ID = 'user_id';
+  static const userId = 'user_id';
   final headers = {
     'content-type': 'application/json',
     'accept': 'application/json',
@@ -22,9 +26,13 @@ class SeedService {
     final url = Uri.parse('$baseUrl/$userId');
 
     try {
-      final response = await get(url);
+      // await Future.delayed(const Duration(seconds: 5,),() => throw TimeExceededException());
+      final response = await get(url).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeExceededException(),
+      );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final fetchedSeeds = json.decode(response.body) as List<dynamic>;
         if (fetchedSeeds.isEmpty) {
           return [];
@@ -33,9 +41,16 @@ class SeedService {
         return fetchedSeeds.map((seedJson) {
           return NetworkSeed.fromJson(seedJson);
         }).toList();
+      } else if (response.statusCode >= 400 && response.statusCode < 500) {
+        throw Exception('Um erro ocorreu. Tente novamente');
+      } else if (response.statusCode == 503) {
+        throw UnavailableServerException();
       } else {
-        throw Exception();
+        throw Exception('Erro no servidor. Tente novamente mais tarde');
       }
+    } on SocketException {
+      throw Exception('Você não possui internet');
+
     } catch (error) {
       rethrow;
     }
@@ -53,15 +68,25 @@ class SeedService {
             url,
             body: networkSeed.toJson(userId),
             headers: headers,
+          ).timeout(
+            const Duration(seconds: 30),
+            onTimeout: () => throw TimeExceededException(),
           );
 
           if (response.statusCode >= 400 && response.statusCode < 500) {
-            throw Exception('${response.body}');
-          } else if (response.statusCode >= 500 && response.statusCode < 600) {
-            throw Exception('${response.body}');
+            throw Exception('Um erro ocorreu. Tente novamente');
+
+          } else if (response.statusCode == 503) {
+            throw UnavailableServerException();
+
+          } else {
+            throw Exception('Erro no servidor. Tente novamente mais tarde');
           }
         },
       );
+
+    } on SocketException {
+      throw Exception('Você não possui internet');
     } catch (error) {
       rethrow;
     }

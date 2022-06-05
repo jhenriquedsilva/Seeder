@@ -4,11 +4,16 @@ import 'package:seed/providers/auth_provider.dart';
 import 'package:seed/providers/seed_provider.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
 
-class SeedsScreen extends StatelessWidget {
+class SeedsScreen extends StatefulWidget {
   static const routeName = '/seed';
 
   const SeedsScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SeedsScreen> createState() => _SeedsScreenState();
+}
+
+class _SeedsScreenState extends State<SeedsScreen> {
   void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -30,14 +35,12 @@ class SeedsScreen extends StatelessWidget {
             icon: const Icon(Icons.sync),
             onPressed: () async {
               try {
-
                 await Provider.of<SeedProvider>(context, listen: false)
                     .synchronize();
                 showSnackBar(context, 'Sementes sincronizadas com sucesso');
               } catch (error) {
                 showSnackBar(context, error.toString());
               }
-
             },
           ),
           IconButton(
@@ -102,7 +105,36 @@ class SeedsScreen extends StatelessWidget {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
+
+                // If a time out exception is thrown
+              } else if (snapshot.hasError) {
+                return Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          snapshot.error.toString(),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {});
+                          },
+                          child: const Text(
+                            'Recarregar',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        margin: const EdgeInsets.all(16),
+                      )
+                    ],
+                  ),
+                );
               } else {
+                // TODO Create a new widget for this list
                 return Consumer<SeedProvider>(
                   builder: (context, seedProvider, _) => Expanded(
                     child: ListView.builder(

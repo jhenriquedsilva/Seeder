@@ -1,6 +1,6 @@
 import 'package:seed/preferences/local_storage_service.dart';
 
-import '../network/authentication_service.dart';
+import '../network/auth_service.dart';
 
 class AuthRepository {
   AuthRepository(

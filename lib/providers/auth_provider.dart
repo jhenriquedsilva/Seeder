@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:seed/network/authentication_service.dart';
+import 'package:seed/network/auth_service.dart';
 import 'package:seed/preferences/user_shared_preferences_service.dart';
 import 'package:seed/repository/authentication_repository.dart';
 
