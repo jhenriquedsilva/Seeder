@@ -6,14 +6,16 @@ class Seed {
     required this.manufacturer,
     required this.manufacturedAt,
     required this.expiresIn,
+    required this.createdAt,
     required this. synchronized,
   });
 
   final String id;
   final String name;
   final String manufacturer;
-  final String manufacturedAt;
-  final String expiresIn;
+  final DateTime manufacturedAt;
+  final DateTime expiresIn;
+  final DateTime createdAt;
   final int synchronized;
 
 }
