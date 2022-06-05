@@ -1,6 +1,7 @@
 class Seed {
 
   const Seed({
+    required this.id,
     required this.name,
     required this.manufacturer,
     required this.manufacturedAt,
@@ -8,6 +9,7 @@ class Seed {
     required this. synchronized,
   });
 
+  final String id;
   final String name;
   final String manufacturer;
   final String manufacturedAt;
