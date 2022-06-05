@@ -45,10 +45,10 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
 
     try {
       await Provider.of<SeedProvider>(context, listen: false).insert(
-        _seedName!,
-        _manufacturerName!,
-        _manufacturedAt!,
-        _expiresIn!,
+        _seedName as String,
+        _manufacturerName as String,
+        _manufacturedAt as DateTime,
+        _expiresIn as DateTime,
       );
 
       showSnackBar(context, 'Nova semente cadastrada com sucesso');
@@ -214,7 +214,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                               )
                             : Text(
                                 DateFormat('dd/MM/yyyy')
-                                    .format(_manufacturedAt!),
+                                    .format(_manufacturedAt as DateTime),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 22),
                               ),
@@ -270,7 +270,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                 color: Theme.of(context).primaryColor,
                               )
                             : Text(
-                                DateFormat('dd/MM/yyyy').format(_expiresIn!),
+                                DateFormat('dd/MM/yyyy').format(_expiresIn as DateTime),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 22),
                               ),
