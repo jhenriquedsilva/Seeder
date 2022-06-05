@@ -324,6 +324,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () async {
           await _submitData();
         },
