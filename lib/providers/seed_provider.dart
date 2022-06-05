@@ -47,6 +47,7 @@ class SeedProvider with ChangeNotifier {
     return databaseSeeds
         .map(
           (databaseSeed) => Seed(
+              id: databaseSeed.id,
               name: databaseSeed.name,
               manufacturer: databaseSeed.manufacturer,
               manufacturedAt: databaseSeed.manufacturedAt,
