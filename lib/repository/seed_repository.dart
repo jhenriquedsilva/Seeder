@@ -146,6 +146,7 @@ class SeedRepository {
     return databaseSeeds
         .map(
           (databaseSeed) => Seed(
+            id: databaseSeed.id,
             name: databaseSeed.name,
             manufacturer: databaseSeed.manufacturer,
             manufacturedAt: databaseSeed.manufacturedAt,
