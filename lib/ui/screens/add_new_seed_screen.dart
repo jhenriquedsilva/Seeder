@@ -92,11 +92,38 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                               color: Theme.of(context).primaryColor,
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(32),
+                              padding: const EdgeInsets.all(16),
                               child: TextFormField(
+                                cursorColor: Theme.of(context).primaryColor,
                                 textAlign: TextAlign.center,
-                                decoration: const InputDecoration(
-                                  hintText: 'Nome da Semente',
+                                decoration: InputDecoration(
+                                  hintText: 'Nome da semente',
+                                  hintStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(color: Colors.black),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 2.0)),
+                                  errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide:
+                                          BorderSide(color: Colors.red)),
+                                  focusedErrorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Colors.red, width: 2.0)),
                                 ),
                                 keyboardType: TextInputType.name,
                                 validator: (seedName) {
@@ -111,16 +138,48 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                 },
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Icon(
+                              Icons.factory,
+                              color: Theme.of(context).primaryColor,
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(32),
+                              padding: const EdgeInsets.all(16),
                               child: TextFormField(
+                                cursorColor: Theme.of(context).primaryColor,
                                 textAlign: TextAlign.center,
                                 keyboardType: TextInputType.name,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   hintText: 'Fabricante',
+                                  hintStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(color: Colors.black),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 2.0)),
+                                  errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide:
+                                          BorderSide(color: Colors.red)),
+                                  focusedErrorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Colors.red, width: 2.0)),
                                 ),
                                 validator: (manufacturerName) {
                                   if (manufacturerName == null ||
