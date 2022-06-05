@@ -65,22 +65,32 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Adicione Semente'),
+        title: Text(
+          'Adicionar',
+          style: Theme.of(context).textTheme.headline4,
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: SingleChildScrollView(
-                        child: Column(
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.only(top: 16),
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Column(
                           children: [
+                            Icon(
+                              Icons.nature,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(32),
                               child: TextFormField(
