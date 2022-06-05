@@ -91,28 +91,38 @@ class _SeedsScreenState extends State<SeedsScreen> {
               icon: const Icon(Icons.logout))
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Buscar sementes...',
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(color: Colors.green)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide:
+                            BorderSide(color: Colors.green, width: 2.0)),
+                    hintText: 'Buscar sementes...',
+                    hintStyle: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black)
+                  ),
+                  onChanged: (query) {
+                    Provider.of<SeedProvider>(context, listen: false)
+                        .searchSeeds(query);
+                  },
+                ),
               ),
-              onChanged: (query) {
-                Provider.of<SeedProvider>(context, listen: false).searchSeeds(query);
-              },
-            ),
-          ),
-          FutureBuilder(
-            future:
-                Provider.of<SeedProvider>(context, listen: false).cacheSeeds(),
-            builder: (_, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+              FutureBuilder(
+                future: Provider.of<SeedProvider>(context, listen: false)
+                    .cacheSeeds(),
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
 
                 // If a time out exception is thrown
               } else if (snapshot.hasError) {
