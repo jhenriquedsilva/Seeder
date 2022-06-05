@@ -178,20 +178,22 @@ class _InputFormState extends State<InputForm> {
               shadowColor: Colors.green,
               shape: const StadiumBorder(),
             ),
-            TextButton(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: TextButton(
               child: Text(
-                isLogin
-                    ? 'Ainda não possui uma conta?'
-                    : 'Já possui uma conta?',
-                style: const TextStyle(color: Colors.white),
-              ),
+                  isLogin
+                      ? 'Ainda não possui uma conta?'
+                      : 'Já possui uma conta?',
+                  style: Theme.of(context).textTheme.button),
               onPressed: () {
                 Provider.of<AuthProvider>(context, listen: false)
                     .changeAuthMode();
               },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
