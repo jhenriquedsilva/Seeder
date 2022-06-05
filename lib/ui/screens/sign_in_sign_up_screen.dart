@@ -15,30 +15,25 @@ class _SingInSignUpScreenState extends State<SingInSignUpScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Aegro',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 50,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Aegro', style: Theme.of(context).textTheme.headline6)
+                  ],
+                ),
               ),
-            ),
-            const InputForm(),
-          ],
+              const InputForm(),
+            ],
+          ),
         ),
       ),
     );
