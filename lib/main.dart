@@ -44,7 +44,7 @@ class App extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                 ),
               button: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w900),
-              labelMedium: TextStyle(color: Colors.white, fontSize: 16,)
+              labelMedium: TextStyle(color: Colors.white, fontSize: 18),
 
             ),
           ),
