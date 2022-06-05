@@ -69,43 +69,95 @@ class _InputFormState extends State<InputForm> {
           children: [
             if (!isLogin)
               Padding(
-                padding: const EdgeInsets.all(32),
-                child: TextFormField(
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    hintText: 'Informe seu nome completo',
-                  ),
-                  keyboardType: TextInputType.name,
-                  validator: (name) {
-                    if (name == null || name.trim().isEmpty) {
-                      return 'Informe seu nome completo';
-                    }
-                    return null;
-                  },
-                  onSaved: (fullName) {
-                    _userFullName = fullName as String;
-                  },
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                    TextFormField(
+                      cursorColor: Colors.white,
+                      style: Theme.of(context).textTheme.labelMedium,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintText: 'Informe seu nome completo',
+                        hintStyle: Theme.of(context).textTheme.labelMedium,
+                        enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 2.0)),
+                        errorBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderSide: BorderSide(color: Colors.red)),
+                        focusedErrorBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderSide:
+                                BorderSide(color: Colors.red, width: 2.0)),
+                      ),
+                      keyboardType: TextInputType.name,
+                      validator: (name) {
+                        if (name == null || name.trim().isEmpty) {
+                          return 'Informe seu nome completo';
+                        }
+                        return null;
+                      },
+                      onSaved: (fullName) {
+                        _userFullName = fullName as String;
+                      },
+                    )
+                  ],
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.all(32),
-              child: TextFormField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  hintText: 'Informe seu email',
-                ),
-                validator: (email) {
-                  final regex = RegExp(
-                      r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-                  if (email == null || !regex.hasMatch(email)) {
-                    return 'Email inválido';
-                  }
-                  return null;
-                },
-                onSaved: (userEmail) {
-                  _userEmail = userEmail as String;
-                },
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.email,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  TextFormField(
+                    cursorColor: Colors.white,
+                    style: Theme.of(context).textTheme.labelMedium,
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      hintText: 'Informe seu email',
+                      hintStyle: Theme.of(context).textTheme.labelMedium,
+                      enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.white)),
+                      focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 2.0)),
+                      errorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide: BorderSide(color: Colors.red)),
+                      focusedErrorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderSide:
+                              BorderSide(color: Colors.red, width: 2.0)),
+                    ),
+                    validator: (email) {
+                      final regex = RegExp(
+                          r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+                      if (email == null || !regex.hasMatch(email)) {
+                        return 'Email inválido';
+                      }
+                      return null;
+                    },
+                    onSaved: (userEmail) {
+                      _userEmail = userEmail as String;
+                    },
+                  )
+                ],
               ),
             ),
             const SizedBox(
