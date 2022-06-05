@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +29,25 @@ class App extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (_, authProvider, __) => MaterialApp(
           title: 'Seeder App',
+          theme: ThemeData(
+            primaryColor: Colors.green[500],
+            fontFamily: 'OpenSans',
+            textTheme: const TextTheme(
+              headline6: TextStyle(
+                color: Colors.white,
+                fontSize: 48,
+                fontWeight: FontWeight.w900,
+              ),
+                headline4: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                ),
+              button: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w900),
+              labelMedium: TextStyle(color: Colors.white, fontSize: 16,)
+
+            ),
+          ),
           home: FutureBuilder<bool>(
             future: authProvider.isAuthenticated(),
             builder: (context, AsyncSnapshot<bool> snapshot) {
