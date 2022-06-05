@@ -49,13 +49,11 @@ class _InputFormState extends State<InputForm> {
     _formKey.currentState?.save();
 
     try {
-
       if (isLogin) {
         await _login();
       } else {
         await _signUp();
       }
-
     } catch (error) {
       showSnackBar(context, error.toString());
     }
@@ -67,7 +65,6 @@ class _InputFormState extends State<InputForm> {
 
     return Form(
       key: _formKey,
-      child: SingleChildScrollView(
         child: Column(
           children: [
             if (!isLogin)
