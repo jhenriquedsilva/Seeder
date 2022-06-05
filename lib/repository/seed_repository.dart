@@ -149,8 +149,11 @@ class SeedRepository {
             id: databaseSeed.id,
             name: databaseSeed.name,
             manufacturer: databaseSeed.manufacturer,
-            manufacturedAt: databaseSeed.manufacturedAt,
-            expiresIn: databaseSeed.expiresIn,
+            manufacturedAt: DateTime.parse(
+                databaseSeed.manufacturedAt),
+            expiresIn: DateTime.parse(
+                databaseSeed.expiresIn),
+            createdAt: DateTime.parse(databaseSeed.createdAt),
             synchronized: databaseSeed.synchronized,
           ),
         )
