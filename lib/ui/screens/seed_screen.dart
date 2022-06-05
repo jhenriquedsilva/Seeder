@@ -28,8 +28,13 @@ class _SeedsScreenState extends State<SeedsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Sementes'),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          'Sementes',
+          style: Theme.of(context).textTheme.headline4,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.sync),
