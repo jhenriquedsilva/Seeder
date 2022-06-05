@@ -88,7 +88,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
                       .logout();
                 }
               },
-              icon: const Icon(Icons.exit_to_app))
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: Column(
