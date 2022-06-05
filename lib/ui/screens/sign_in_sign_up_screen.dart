@@ -13,7 +13,7 @@ class _SingInSignUpScreenState extends State<SingInSignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Column(
