@@ -225,6 +225,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).pushNamed(AddNewSeedScreen.routName);
