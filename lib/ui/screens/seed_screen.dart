@@ -124,66 +124,105 @@ class _SeedsScreenState extends State<SeedsScreen> {
                       child: CircularProgressIndicator(),
                     );
 
-                // If a time out exception is thrown
-              } else if (snapshot.hasError) {
-                return Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Text(
-                          snapshot.error.toString(),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Container(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {});
-                          },
-                          child: const Text(
-                            'Recarregar',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        margin: const EdgeInsets.all(16),
-                      )
-                    ],
-                  ),
-                );
-              } else {
-                // TODO Create a new widget for this list
-                return Consumer<SeedProvider>(
-                  builder: (context, seedProvider, _) => Expanded(
-                    child: ListView.builder(
-                      itemCount: seedProvider.allSeeds.length,
-                      itemBuilder: (_, index) {
-                        final seed = seedProvider.allSeeds[index];
-                        return Column(
+                    // If a time out exception is thrown
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ListTile(
-                              leading: Text(seed.name),
-                              title: Text(seed.manufacturer),
-                              trailing: Icon(
-                                seed.synchronized == 1
-                                    ? Icons.sync
-                                    : Icons.sync_disabled,
-                                color: seed.synchronized == 1
-                                    ? Colors.green
-                                    : Colors.red,
+                            Center(
+                              child: Text(
+                                snapshot.error.toString(),
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.black),
                               ),
                             ),
-                            const Divider(),
+                            const SizedBox(height: 24,),
+                            ElevatedButton(
+                                onPressed: () {
+                                  setState(() {});
+                                },
+                                child: Text(
+                                  'Recarregar',
+                                  style: Theme.of(context).textTheme.button!.copyWith(color: Colors.white),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Theme.of(context).primaryColor,
+                                  padding: const EdgeInsets.all(16),
+                                  fixedSize: Size(MediaQuery.of(context).size.width * 0.7, 60),
+                                  elevation: 16,
+                                  shadowColor: Colors.green,
+                                  // side: const BorderSide(
+                                  //   color: Colors.black,
+                                  //   width: 2,
+                                  // ),
+                                  shape: const StadiumBorder(),
+                                )
+                              ),
                           ],
-                        );
+                        ),
+                      ),
+                    );
+                  } else {
+                    // TODO Create a new widget for this list
+                    return Consumer<SeedProvider>(
+                      builder: (context, seedProvider, _) {
+                        if (seedProvider.allSeeds.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'Você ainda não possui sementes. \nComece a registrar',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        } else {
+                          return SingleChildScrollView(
+                            child: ExpansionPanelList.radio(
+                              children: seedProvider.allSeeds
+                                  .map((seed) => ExpansionPanelRadio(
+                                      value: seed.id,
+                                      canTapOnHeader: true,
+                                      headerBuilder: (context, _) => ListTile(
+                                            leading: Icon(
+                                              Icons.nature,
+                                              color: seed.synchronized == 1
+                                                  ? Theme.of(context)
+                                                      .primaryColor
+                                                  : Theme.of(context)
+                                                      .errorColor,
+                                            ),
+                                            title: Text(seed.name),
+                                          ),
+                                      body: Column(children: [
+                                        Row(
+                                          children: [
+                                            const Text('Fabricado em: '),
+                                            Text(seed.manufacturedAt)
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Text('Válido até: '),
+                                            Text(seed.expiresIn)
+                                          ],
+                                        )
+                                      ])))
+                                  .toList(),
+                            ),
+                          );
+                        }
                       },
-                    ),
-                  ),
-                );
-              }
-            },
+                    );
+                  }
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
