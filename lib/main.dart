@@ -30,7 +30,7 @@ class App extends StatelessWidget {
         builder: (_, authProvider, __) => MaterialApp(
           title: 'Seeder App',
           theme: ThemeData(
-            primaryColor: Colors.green[500],
+            primaryColor: const Color(0xff00c15a),
             fontFamily: 'OpenSans',
             textTheme: const TextTheme(
               headline6: TextStyle(
