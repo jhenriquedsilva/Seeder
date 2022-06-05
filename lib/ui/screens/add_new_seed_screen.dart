@@ -58,12 +58,12 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     } catch (error) {
       showSnackBar(context, error.toString());
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Adicione Semente'),
       ),
