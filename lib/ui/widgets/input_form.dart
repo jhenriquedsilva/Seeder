@@ -21,6 +21,7 @@ class _InputFormState extends State<InputForm> {
         content: Text(
           message,
           textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );

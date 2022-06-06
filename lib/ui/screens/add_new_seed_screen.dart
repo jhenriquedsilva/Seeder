@@ -25,7 +25,9 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
         content: Text(
           message,
           textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.white),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }
@@ -37,7 +39,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     }
 
     if (_manufacturedAt == null || _expiresIn == null) {
-      showSnackBar(context, 'Selecione data de fabricação e validade');
+      showSnackBar(context, 'Selecione fabricação e validade');
       return;
     }
 
@@ -51,7 +53,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
         _expiresIn as DateTime,
       );
 
-      showSnackBar(context, 'Nova semente cadastrada com sucesso');
+      showSnackBar(context, 'Semente cadastrada com sucesso');
 
       Navigator.of(context).pop();
       Provider.of<SeedProvider>(context, listen: false).getSeeds();
