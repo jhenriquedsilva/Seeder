@@ -45,10 +45,10 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
 
     try {
       await Provider.of<SeedProvider>(context, listen: false).insert(
-        _seedName!,
-        _manufacturerName!,
-        _manufacturedAt!,
-        _expiresIn!,
+        _seedName as String,
+        _manufacturerName as String,
+        _manufacturedAt as DateTime,
+        _expiresIn as DateTime,
       );
 
       showSnackBar(context, 'Nova semente cadastrada com sucesso');
@@ -58,35 +58,72 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     } catch (error) {
       showSnackBar(context, error.toString());
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Adicione Semente'),
+        title: Text(
+          'Adicionar',
+          style: Theme.of(context).textTheme.headline4,
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: SingleChildScrollView(
-                        child: Column(
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.only(top: 16),
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Column(
                           children: [
+                            Icon(
+                              Icons.nature,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             Padding(
-                              padding: const EdgeInsets.all(32),
+                              padding: const EdgeInsets.all(16),
                               child: TextFormField(
+                                cursorColor: Theme.of(context).primaryColor,
                                 textAlign: TextAlign.center,
-                                decoration: const InputDecoration(
-                                  hintText: 'Nome da Semente',
+                                decoration: InputDecoration(
+                                  hintText: 'Nome da semente',
+                                  hintStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(color: Colors.black),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 2.0)),
+                                  errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide:
+                                          BorderSide(color: Colors.red)),
+                                  focusedErrorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Colors.red, width: 2.0)),
                                 ),
                                 keyboardType: TextInputType.name,
                                 validator: (seedName) {
@@ -101,16 +138,48 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                 },
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Icon(
+                              Icons.factory,
+                              color: Theme.of(context).primaryColor,
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(32),
+                              padding: const EdgeInsets.all(16),
                               child: TextFormField(
+                                cursorColor: Theme.of(context).primaryColor,
                                 textAlign: TextAlign.center,
                                 keyboardType: TextInputType.name,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   hintText: 'Fabricante',
+                                  hintStyle: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(color: Colors.black),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).primaryColor,
+                                          width: 2.0)),
+                                  errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide:
+                                          BorderSide(color: Colors.red)),
+                                  focusedErrorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      borderSide: BorderSide(
+                                          color: Colors.red, width: 2.0)),
                                 ),
                                 validator: (manufacturerName) {
                                   if (manufacturerName == null ||
@@ -126,89 +195,136 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                               ),
                             ),
                           ],
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _manufacturedAt == null
+                            ? Icon(
+                                Icons.calendar_month,
+                                color: Theme.of(context).primaryColor,
+                              )
+                            : Text(
+                                DateFormat('dd/MM/yyyy')
+                                    .format(_manufacturedAt as DateTime),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 22),
+                              ),
+                        ElevatedButton(
+                          child: const Text('Fabricação'),
+                          onPressed: () async {
+                            final date = await showDatePicker(
+                              builder: (context, child) {
+                                return Theme(
+                                    data: Theme.of(context).copyWith(
+                                        colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context)
+                                                .primaryColor)),
+                                    child: child!);
+                              },
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(DateTime.now().year - 1,
+                                  DateTime.now().month, DateTime.now().day),
+                              lastDate: DateTime.now(),
+                            );
+
+                            if (date != null) {
+                              setState(() {
+                                _manufacturedAt = date;
+                              });
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).primaryColor,
+                            padding: const EdgeInsets.all(16),
+                            fixedSize: Size(
+                                MediaQuery.of(context).size.width * 0.4, 60),
+                            elevation: 16,
+                            shadowColor: Colors.green,
+                            shape: const StadiumBorder(),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(_manufacturedAt == null
-                            ? 'Escolha data de fabricação'
-                            : DateFormat('dd-MM-yyyy')
-                                .format(_manufacturedAt!)),
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: OutlinedButton(
-                            child: const Text('Data de Fabricação'),
-                            onPressed: () async {
-                              final date = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(DateTime.now().year - 1,
-                                    DateTime.now().month, DateTime.now().day),
-                                lastDate: DateTime.now(),
-                              );
-
-                              if (date != null) {
-                                setState(() {
-                                  _manufacturedAt = date;
-                                });
-                              }
-                            },
-                          ),
-                        )
                       ],
                     ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Row(
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(_expiresIn == null
-                            ? 'Escolha a data de validade'
-                            : DateFormat('dd-MM-yyyy').format(_expiresIn!)),
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: OutlinedButton(
-                            child: const Text('Validade'),
-                            onPressed: _manufacturedAt != null
-                                ? () async {
-                                    final date = await showDatePicker(
-                                      context: context,
-                                      initialDate: _manufacturedAt!
-                                          .add(const Duration(days: 1)),
-                                      firstDate: _manufacturedAt!
-                                          .add(const Duration(days: 1)),
-                                      lastDate: DateTime(
-                                        _manufacturedAt!.year + 10,
-                                      ),
-                                    );
+                        _expiresIn == null
+                            ? Icon(
+                                Icons.calendar_month,
+                                color: Theme.of(context).primaryColor,
+                              )
+                            : Text(
+                                DateFormat('dd/MM/yyyy').format(_expiresIn as DateTime),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 22),
+                              ),
+                        ElevatedButton(
+                          child: const Text('Validade'),
+                          onPressed: _manufacturedAt != null
+                              ? () async {
+                                  final date = await showDatePicker(
+                                    builder: (context, child) {
+                                      return Theme(
+                                          data: Theme.of(context).copyWith(
+                                              colorScheme: ColorScheme.light(
+                                                  primary: Theme.of(context)
+                                                      .primaryColor)),
+                                          child: child!);
+                                    },
+                                    context: context,
+                                    initialDate: _manufacturedAt!
+                                        .add(const Duration(days: 1)),
+                                    firstDate: _manufacturedAt!
+                                        .add(const Duration(days: 1)),
+                                    lastDate: DateTime(
+                                      _manufacturedAt!.year + 10,
+                                    ),
+                                  );
 
-                                    if (date != null) {
-                                      setState(() {
-                                        _expiresIn = date;
-                                      });
-                                    }
+                                  if (date != null) {
+                                    setState(() {
+                                      _expiresIn = date;
+                                    });
                                   }
-                                : null,
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).primaryColor,
+                            padding: const EdgeInsets.all(16),
+                            fixedSize: Size(
+                                MediaQuery.of(context).size.width * 0.4, 60),
+                            elevation: 16,
+                            shadowColor: Colors.green,
+                            shape: const StadiumBorder(),
                           ),
-                        )
+                        ),
                       ],
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () async {
           await _submitData();
         },
