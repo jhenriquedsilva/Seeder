@@ -1,33 +1,34 @@
-import 'package:seed/preferences/local_storage_service.dart';
+import 'package:seed/database/seeder_database.dart';
 
+import '../models/user.dart';
 import '../network/auth_service.dart';
 
 class AuthRepository {
   AuthRepository(
     AuthService authService,
-    LocalStorageService localStorageService,
+    SeederDatabase seederDatabase,
   )   : _authService = authService,
-        _localStorageService = localStorageService;
+        _seederDatabase = seederDatabase;
 
   final AuthService _authService;
-  final LocalStorageService _localStorageService;
+  final SeederDatabase _seederDatabase;
 
   Future<void> login(String email) async {
     final user = await _authService.login(email);
-    await _localStorageService.save(user);
+    await _seederDatabase.insertUser(user);
   }
 
   Future<void> signup(String fullName, String email) async {
     final user = await _authService.signup(fullName, email);
-    _localStorageService.save(user);
+    await _seederDatabase.insertUser(user);
   }
 
-  Future<String?> getId() async {
-    final userId = await _localStorageService.getId();
-    return userId;
+  Future<List<User>> getUser() async {
+    final userList = await _seederDatabase.getUser();
+    return userList;
   }
 
   Future<void> delete() async {
-    await _localStorageService.delete();
+    await _seederDatabase.clearUser();
   }
 }
