@@ -59,7 +59,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
 
                     // If a time out exception is thrown
                   } else if (snapshot.hasError) {
-                    return _buildTimeOutExceptionWarning(snapshot);
+                    return _buildErrorHandlingWidgets(snapshot);
                   } else {
                     return Expanded(
                       child: Consumer<SeedProvider>(
@@ -177,7 +177,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
     );
   }
 
-  Widget _buildTimeOutExceptionWarning(AsyncSnapshot snapshot) {
+  Widget _buildErrorHandlingWidgets(AsyncSnapshot snapshot) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -198,7 +198,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
               setState(() {});
             },
             child: Text(
-              'Recarregar',
+              'Tentar novamente',
               style: Theme.of(context)
                   .textTheme
                   .button!
