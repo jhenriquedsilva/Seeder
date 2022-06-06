@@ -3,20 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:seed/database/seeder_database.dart';
 import 'package:seed/exceptions/time_exceeded_exception.dart';
 import 'package:seed/exceptions/unavailable_server.dart';
-import 'package:seed/preferences/local_storage_service.dart';
 
 import '../models/network_seed.dart';
 
 class SeedService {
-  SeedService(LocalStorageService localStorageService)
-      : _localStorageService = localStorageService;
+  SeedService(SeederDatabase seederDatabase)
+      : _seederDatabase = seederDatabase;
 
-  final LocalStorageService _localStorageService;
+  final SeederDatabase _seederDatabase;
   final baseUrl =
       'https://learning-data-sync-mobile.herokuapp.com/datasync/api/seed';
-  static const userId = 'user_id';
   final headers = {
     'content-type': 'application/json',
     'accept': 'application/json',
@@ -58,7 +57,7 @@ class SeedService {
 
   Future<void> send(List<NetworkSeed> networkSeeds) async {
     final url = Uri.parse(baseUrl);
-    final userId = await _localStorageService.getId() as String;
+    final userList = await _seederDatabase.getUser();
 
     try {
       await Future.forEach<NetworkSeed>(
@@ -66,7 +65,7 @@ class SeedService {
         (networkSeed) async {
           final response = await post(
             url,
-            body: networkSeed.toJson(userId),
+            body: networkSeed.toJson(userList[0].id),
             headers: headers,
           ).timeout(
             const Duration(seconds: 30),
