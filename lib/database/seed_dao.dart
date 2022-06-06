@@ -1,8 +1,7 @@
-import 'package:seed/models/seed.dart';
-
+import '../models/database_seed.dart';
 import 'dao.dart';
 
-class SeedDao implements Dao<Seed> {
+class SeedDao implements Dao<DatabaseSeed> {
   final tableName = 'seeds';
   final columnId = 'id';
   final columnName = 'name';
@@ -24,8 +23,8 @@ class SeedDao implements Dao<Seed> {
       ')';
 
   @override
-  Seed fromMap(Map<String, dynamic> query) {
-    return Seed(
+  DatabaseSeed fromMap(Map<String, dynamic> query) {
+    return DatabaseSeed(
         id: query[columnId],
         name: query[columnName],
         manufacturer: query[columnManufacturer],
@@ -36,7 +35,7 @@ class SeedDao implements Dao<Seed> {
   }
 
   @override
-  Map<String, dynamic> toMap(Seed seed) {
+  Map<String, dynamic> toMap(DatabaseSeed seed) {
     return <String, dynamic>{
       columnId: seed.id,
       columnName: seed.name,
@@ -49,8 +48,8 @@ class SeedDao implements Dao<Seed> {
   }
 
   @override
-  List<Seed> fromList(List<Map<String, dynamic>> query) {
-    List<Seed> seeds = [];
+  List<DatabaseSeed> fromList(List<Map<String, dynamic>> query) {
+    List<DatabaseSeed> seeds = [];
     for (Map<String, dynamic> map in query) {
       seeds.add(fromMap(map));
     }
