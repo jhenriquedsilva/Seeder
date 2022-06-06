@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:seed/exceptions/db_cannot_insert_data_exception.dart';
 import 'package:seed/providers/auth_provider.dart';
 import 'package:seed/providers/seed_provider.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
+
+import '../../exceptions/db_does_not_load_data_exception.dart';
 
 class SeedsScreen extends StatefulWidget {
   static const routeName = '/seed';
@@ -59,9 +62,8 @@ class _SeedsScreenState extends State<SeedsScreen> {
 
                     // If a time out exception is thrown
                   } else if (snapshot.hasError) {
-                    return _buildTimeOutExceptionWarning(snapshot);
+                    return _buildErrorHandlingWidgets(snapshot);
                   } else {
-                    // TODO Create a new widget for this list
                     return Expanded(
                       child: Consumer<SeedProvider>(
                         builder: (context, seedProvider, _) {
@@ -99,6 +101,10 @@ class _SeedsScreenState extends State<SeedsScreen> {
             await Provider.of<SeedProvider>(context, listen: false)
                 .synchronize();
             showSnackBar(context, 'Sementes sincronizadas com sucesso');
+          } on DbCannotInsertDataException {
+            setState(() {});
+          } on DbDoesNotLoadDataException {
+            setState(() {});
           } catch (error) {
             showSnackBar(context, error.toString());
           }
@@ -106,45 +112,49 @@ class _SeedsScreenState extends State<SeedsScreen> {
       ),
       IconButton(
           onPressed: () async {
-            final areThereNonSynchronizedSeeds =
-                await Provider.of<SeedProvider>(context, listen: false)
-                    .areThereAnyNonSynchronized();
-            if (areThereNonSynchronizedSeeds) {
-              final isLoggingOut = await showDialog<bool>(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text(
-                    'Sementes não sincronizadas',
-                    style: TextStyle(color: Colors.black, fontSize: 24),
+            try {
+              final areThereNonSynchronizedSeeds =
+              await Provider.of<SeedProvider>(context, listen: false)
+                  .areThereAnyNonSynchronized();
+              if (areThereNonSynchronizedSeeds) {
+                final isLoggingOut = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text(
+                      'Sementes não sincronizadas',
+                      style: TextStyle(color: Colors.black, fontSize: 24),
+                    ),
+                    content: const Text(
+                        'Se você sair agora, perderá as sementes não sincronizadas'),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          child: const Text(
+                            'Sair',
+                            style: TextStyle(color: Colors.green),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: const Text('Sincronizar',
+                              style: TextStyle(color: Colors.green)))
+                    ],
                   ),
-                  content: const Text(
-                      'Se você sair agora, perderá as sementes não sincronizadas'),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        child: const Text(
-                          'Sair',
-                          style: TextStyle(color: Colors.green),
-                        )),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        child: const Text('Sincronizar',
-                            style: TextStyle(color: Colors.green)))
-                  ],
-                ),
-              );
+                );
 
-              if (isLoggingOut != null && isLoggingOut) {
-                await Provider.of<SeedProvider>(context, listen: false).clear();
-                await Provider.of<AuthProvider>(context, listen: false)
-                    .logout();
+                if (isLoggingOut != null && isLoggingOut) {
+                  await Provider.of<SeedProvider>(context, listen: false).clear();
+                  await Provider.of<AuthProvider>(context, listen: false)
+                      .logout();
+                }
+              } else {
+                await Provider.of<AuthProvider>(context, listen: false).logout();
               }
-            } else {
-              await Provider.of<AuthProvider>(context, listen: false).logout();
+            } catch (error) {
+              showSnackBar(context, error.toString());
             }
           },
           icon: const Icon(Icons.logout))
@@ -168,13 +178,17 @@ class _SeedsScreenState extends State<SeedsScreen> {
                 .labelMedium!
                 .copyWith(color: Colors.black)),
         onChanged: (query) {
-          Provider.of<SeedProvider>(context, listen: false).searchSeeds(query);
+          try {
+            Provider.of<SeedProvider>(context, listen: false).searchSeeds(query);
+          } catch (error) {
+            showSnackBar(context, 'Não foi possível buscar sementes');
+          }
         },
       ),
     );
   }
 
-  Widget _buildTimeOutExceptionWarning(AsyncSnapshot snapshot) {
+  Widget _buildErrorHandlingWidgets(AsyncSnapshot snapshot) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -195,7 +209,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
               setState(() {});
             },
             child: Text(
-              'Recarregar',
+              'Tentar novamente',
               style: Theme.of(context)
                   .textTheme
                   .button!

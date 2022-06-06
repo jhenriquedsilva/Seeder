@@ -1,25 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:seed/database/seeder_database.dart';
-import 'package:seed/network/seed_service.dart';
-import 'package:seed/preferences/user_shared_preferences_service.dart';
 import 'package:seed/repository/seed_repository.dart';
 
 import '../models/database_seed.dart';
 import '../models/seed.dart';
 
 class SeedProvider with ChangeNotifier {
-  SeedProvider() {
-    _seedRepository = SeedRepository(
-      SeedService(
-        UserSharedPreferencesService(),
-      ),
-      SeederDatabase(),
-    );
-  }
+  SeedProvider(this._seedRepository);
 
-  late SeedRepository _seedRepository;
+  final SeedRepository _seedRepository;
   late List<Seed> allSeeds;
 
   Future<void> cacheSeeds() async {

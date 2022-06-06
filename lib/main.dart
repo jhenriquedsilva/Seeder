@@ -3,9 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/providers/auth_provider.dart';
 import 'package:seed/providers/seed_provider.dart';
+import 'package:seed/repository/auth_repository.dart';
+import 'package:seed/repository/seed_repository.dart';
+import 'package:seed/repository/seeds_database_repository.dart';
+import 'package:seed/repository/users_database_repository.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
+import 'package:seed/ui/screens/data_not_loading_screen.dart';
 import 'package:seed/ui/screens/sign_in_sign_up_screen.dart';
 import 'package:seed/ui/screens/seed_screen.dart';
+
+import 'database/database_provider.dart';
+import 'network/auth_service.dart';
+import 'network/seed_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,15 +25,35 @@ void main() {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => SeedProvider())
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(
+            AuthRepository(
+              AuthService(),
+              UsersDatabaseRepository(DatabaseProvider.get),
+            ),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SeedProvider(
+            SeedRepository(
+              SeedService(),
+              SeedsDatabaseRepository(DatabaseProvider.get),
+              UsersDatabaseRepository(DatabaseProvider.get),
+            ),
+          ),
+        )
       ],
       child: Consumer<AuthProvider>(
         builder: (_, authProvider, __) => MaterialApp(
@@ -38,14 +67,19 @@ class App extends StatelessWidget {
                 fontSize: 48,
                 fontWeight: FontWeight.w900,
               ),
-                headline4: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                ),
-              button: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w900),
-              labelMedium: TextStyle(color: Colors.white, fontSize: 18),
-
+              headline4: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.w900,
+              ),
+              button: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900),
+              labelMedium: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
             ),
           ),
           home: FutureBuilder<bool>(
@@ -56,6 +90,8 @@ class App extends StatelessWidget {
                   // TODO Create a splash screen
                   child: CircularProgressIndicator(),
                 );
+              } else if (snapshot.hasError) {
+                return DataNotLoadingScreen(setStateCallback: setState, snapshot: snapshot);
               } else {
                 final isAuthenticated = snapshot.data as bool;
 
@@ -67,11 +103,11 @@ class App extends StatelessWidget {
               }
             },
           ),
-          routes: {
-            AddNewSeedScreen.routName: (_) => const AddNewSeedScreen()
-          },
+          routes: {AddNewSeedScreen.routName: (_) => const AddNewSeedScreen()},
         ),
       ),
     );
   }
 }
+
+

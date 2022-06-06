@@ -1,9 +1,9 @@
 import 'package:intl/intl.dart';
-import 'package:seed/database/seeder_database.dart';
 import 'package:seed/models/seed.dart';
+import 'package:seed/repository/seeds_database_repository.dart';
+import 'package:seed/repository/users_database_repository.dart';
 import 'package:uuid/uuid.dart';
 
-import '../database/seeder_database.dart';
 import '../exceptions/no_non_synchronized_seeds_exception.dart';
 import '../models/database_seed.dart';
 import '../models/network_seed.dart';
@@ -11,13 +11,14 @@ import '../network/seed_service.dart';
 
 class SeedRepository {
   SeedRepository(
-    SeedService seedService,
-    SeederDatabase seedDatabase,
-  )   : _seedService = seedService,
-        _seederDatabase = seedDatabase;
+    this._seedService,
+    this._seedsDatabaseRepository,
+    this._usersDatabaseRepository,
+  );
 
-  late final SeedService _seedService;
-  late final SeederDatabase _seederDatabase;
+  final SeedService _seedService;
+  final SeedsDatabaseRepository _seedsDatabaseRepository;
+  final UsersDatabaseRepository _usersDatabaseRepository;
 
   Future<List<DatabaseSeed>> cacheSeeds() async {
     final networkSeeds = await _fetchRemoteSeeds();
@@ -25,18 +26,19 @@ class SeedRepository {
       return [];
     }
     await _storeSeedsOnDatabase(networkSeeds);
-    return _fetchSeedsFromDatabase();
+    return getSeeds();
   }
 
   Future<List<NetworkSeed>> _fetchRemoteSeeds() async {
-    return _seedService.fetch('6ab2456a-d5c5-4f05-a084-3d861fc8c02f');
+    final users = await _usersDatabaseRepository.getUsers();
+    return _seedService.fetch(users[0].id);
   }
 
   Future<void> _storeSeedsOnDatabase(List<NetworkSeed> networkSeeds) async {
     await Future.forEach<NetworkSeed>(
       networkSeeds,
       (networkSeed) async {
-        await _seederDatabase.insert(
+        await _seedsDatabaseRepository.insert(
           DatabaseSeed(
             id: networkSeed.id,
             name: networkSeed.name,
@@ -51,12 +53,8 @@ class SeedRepository {
     );
   }
 
-  Future<List<DatabaseSeed>> _fetchSeedsFromDatabase() async {
-    return _seederDatabase.getAll();
-  }
-
   Future<List<DatabaseSeed>> getSeeds() async {
-    return _seederDatabase.getAll();
+    return _seedsDatabaseRepository.getSeeds();
   }
 
   Future<void> insert(
@@ -80,19 +78,23 @@ class SeedRepository {
       synchronized: 0,
     );
 
-    await _seederDatabase.insert(newSeed);
+    await _seedsDatabaseRepository.insert(newSeed);
   }
 
   Future<void> synchronizeSeeds() async {
     final nonSynchronizedDatabaseSeeds =
-        await _seederDatabase.getNonSynchronized();
+        await _seedsDatabaseRepository.getNonSynchronizedSeeds();
 
     if (nonSynchronizedDatabaseSeeds.isEmpty) {
       throw NoNonSynchronizedSeedsException();
     }
 
-    await _seedService
-        .send(databaseSeedToNetworkSeed(nonSynchronizedDatabaseSeeds));
+    final networkSeeds = databaseSeedToNetworkSeed(
+      nonSynchronizedDatabaseSeeds,
+    );
+    final userList = await _usersDatabaseRepository.getUsers();
+
+    await _seedService.send(userList[0], networkSeeds);
     final synchronizedDatabaseSeeds =
         nonSynchronizedDatabaseSeeds.map((databaseSeed) => DatabaseSeed(
               id: databaseSeed.id,
@@ -107,7 +109,7 @@ class SeedRepository {
     await Future.forEach<DatabaseSeed>(
       synchronizedDatabaseSeeds,
       (databaseSeed) async {
-        await _seederDatabase.update(databaseSeed);
+        await _seedsDatabaseRepository.update(databaseSeed);
       },
     );
   }
@@ -129,16 +131,18 @@ class SeedRepository {
   }
 
   Future<void> clear() async {
-    await _seederDatabase.clear();
+    await _seedsDatabaseRepository.clear();
   }
 
   Future<bool> areThereAnyNonSynchronized() async {
-    final nonSynchronizedDatabaseSeeds = await _seederDatabase.getNonSynchronized();
+    final nonSynchronizedDatabaseSeeds =
+        await _seedsDatabaseRepository.getNonSynchronizedSeeds();
     return nonSynchronizedDatabaseSeeds.isNotEmpty;
   }
 
   Future<List<Seed>> search(String query) async {
-    final selectedDatabaseSeeds = await _seederDatabase.search(query);
+    final selectedDatabaseSeeds =
+        await _seedsDatabaseRepository.searchSeeds(query);
     return databaseSeedToSeed(selectedDatabaseSeeds);
   }
 
@@ -149,10 +153,8 @@ class SeedRepository {
             id: databaseSeed.id,
             name: databaseSeed.name,
             manufacturer: databaseSeed.manufacturer,
-            manufacturedAt: DateTime.parse(
-                databaseSeed.manufacturedAt),
-            expiresIn: DateTime.parse(
-                databaseSeed.expiresIn),
+            manufacturedAt: DateTime.parse(databaseSeed.manufacturedAt),
+            expiresIn: DateTime.parse(databaseSeed.expiresIn),
             createdAt: DateTime.parse(databaseSeed.createdAt),
             synchronized: databaseSeed.synchronized,
           ),
