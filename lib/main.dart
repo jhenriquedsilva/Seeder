@@ -61,14 +61,19 @@ class App extends StatelessWidget {
                 fontSize: 48,
                 fontWeight: FontWeight.w900,
               ),
-                headline4: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                ),
-              button: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w900),
-              labelMedium: TextStyle(color: Colors.white, fontSize: 18),
-
+              headline4: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.w900,
+              ),
+              button: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900),
+              labelMedium: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
             ),
           ),
           home: FutureBuilder<bool>(
@@ -90,9 +95,7 @@ class App extends StatelessWidget {
               }
             },
           ),
-          routes: {
-            AddNewSeedScreen.routName: (_) => const AddNewSeedScreen()
-          },
+          routes: {AddNewSeedScreen.routName: (_) => const AddNewSeedScreen()},
         ),
       ),
     );
