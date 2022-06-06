@@ -2,6 +2,8 @@ import 'package:path/path.dart';
 import 'package:seed/models/database_seed.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/user.dart';
+
 class SeederDatabase {
   Future<Database> _getInstance() async {
     return openDatabase(
@@ -20,6 +22,14 @@ class SeederDatabase {
         'synchronized INTEGER NOT NULL'
         ')',
       );
+
+      await seedDatabase.execute(
+        'CREATE TABLE users('
+        'id TEXT PRIMARY KEY, '
+        'fullName TEXT NOT NULL, '
+        'email TEXT NOT NULL'
+        ')',
+      );
     }, version: 1);
   }
 
@@ -33,7 +43,7 @@ class SeederDatabase {
     );
   }
 
-  Future<void> update(DatabaseSeed databaseSeed) async {
+  Future<void> updateSeed(DatabaseSeed databaseSeed) async {
     final db = await _getInstance();
 
     await db.update(
@@ -44,17 +54,16 @@ class SeederDatabase {
     );
   }
 
-  Future<List<DatabaseSeed>> getAll() async {
+  Future<List<DatabaseSeed>> getAllSeeds() async {
     final db = await _getInstance();
 
     final List<Map<String, dynamic>> maps = await db.query('seeds');
 
-    return List.generate(maps.length, (index) =>
-        DatabaseSeed.fromMap(maps[index])
-    );
+    return List.generate(
+        maps.length, (index) => DatabaseSeed.fromMap(maps[index]));
   }
 
-  Future<List<DatabaseSeed>> getNonSynchronized() async {
+  Future<List<DatabaseSeed>> getNonSynchronizedSeeds() async {
     final db = await _getInstance();
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -63,17 +72,16 @@ class SeederDatabase {
       whereArgs: [0],
     );
 
-    return List.generate(maps.length, (index) =>
-      DatabaseSeed.fromMap(maps[index])
-    );
+    return List.generate(
+        maps.length, (index) => DatabaseSeed.fromMap(maps[index]));
   }
 
-  Future<void> clear() async {
+  Future<void> clearSeeds() async {
     final db = await _getInstance();
     await db.delete('seeds');
   }
 
-  Future<List<DatabaseSeed>> search(String query) async {
+  Future<List<DatabaseSeed>> searchSeeds(String query) async {
     final db = await _getInstance();
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -82,9 +90,7 @@ class SeederDatabase {
       whereArgs: ['%$query%', '%$query%'],
     );
 
-    return List.generate(maps.length, (index) =>
-        DatabaseSeed.fromMap(maps[index])
-    );
+    return List.generate(
+        maps.length, (index) => DatabaseSeed.fromMap(maps[index]));
   }
-
 }
