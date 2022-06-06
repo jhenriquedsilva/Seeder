@@ -60,15 +60,19 @@ class SeedsDatabaseRepository implements SeedsRepository {
 
   @override
   Future<List<DatabaseSeed>> getNonSynchronizedSeeds() async {
-    final db = await databaseProvider.db();
+    try {
+      final db = await databaseProvider.db();
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      dao.tableName,
-      where: '${dao.columnSynchronized} = ?',
-      whereArgs: [0],
-    );
+      final List<Map<String, dynamic>> maps = await db.query(
+        dao.tableName,
+        where: '${dao.columnSynchronized} = ?',
+        whereArgs: [0],
+      );
 
-    return List.generate(maps.length, (index) => dao.fromMap(maps[index]));
+      return List.generate(maps.length, (index) => dao.fromMap(maps[index]));
+    } catch (error) {
+      throw DbDoesNotLoadDataException();
+    }
   }
 
   @override
