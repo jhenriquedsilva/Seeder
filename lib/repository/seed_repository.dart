@@ -36,7 +36,7 @@ class SeedRepository {
     await Future.forEach<NetworkSeed>(
       networkSeeds,
       (networkSeed) async {
-        await _seederDatabase.insert(
+        await _seederDatabase.insertSeed(
           DatabaseSeed(
             id: networkSeed.id,
             name: networkSeed.name,
@@ -52,11 +52,11 @@ class SeedRepository {
   }
 
   Future<List<DatabaseSeed>> _fetchSeedsFromDatabase() async {
-    return _seederDatabase.getAll();
+    return _seederDatabase.getAllSeeds();
   }
 
   Future<List<DatabaseSeed>> getSeeds() async {
-    return _seederDatabase.getAll();
+    return _seederDatabase.getAllSeeds();
   }
 
   Future<void> insert(
@@ -80,12 +80,12 @@ class SeedRepository {
       synchronized: 0,
     );
 
-    await _seederDatabase.insert(newSeed);
+    await _seederDatabase.insertSeed(newSeed);
   }
 
   Future<void> synchronizeSeeds() async {
     final nonSynchronizedDatabaseSeeds =
-        await _seederDatabase.getNonSynchronized();
+        await _seederDatabase.getNonSynchronizedSeeds();
 
     if (nonSynchronizedDatabaseSeeds.isEmpty) {
       throw NoNonSynchronizedSeedsException();
@@ -107,7 +107,7 @@ class SeedRepository {
     await Future.forEach<DatabaseSeed>(
       synchronizedDatabaseSeeds,
       (databaseSeed) async {
-        await _seederDatabase.update(databaseSeed);
+        await _seederDatabase.updateSeed(databaseSeed);
       },
     );
   }
@@ -129,16 +129,16 @@ class SeedRepository {
   }
 
   Future<void> clear() async {
-    await _seederDatabase.clear();
+    await _seederDatabase.clearSeeds();
   }
 
   Future<bool> areThereAnyNonSynchronized() async {
-    final nonSynchronizedDatabaseSeeds = await _seederDatabase.getNonSynchronized();
+    final nonSynchronizedDatabaseSeeds = await _seederDatabase.getNonSynchronizedSeeds();
     return nonSynchronizedDatabaseSeeds.isNotEmpty;
   }
 
   Future<List<Seed>> search(String query) async {
-    final selectedDatabaseSeeds = await _seederDatabase.search(query);
+    final selectedDatabaseSeeds = await _seederDatabase.searchSeeds(query);
     return databaseSeedToSeed(selectedDatabaseSeeds);
   }
 
