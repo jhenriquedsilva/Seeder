@@ -61,7 +61,6 @@ class _SeedsScreenState extends State<SeedsScreen> {
                   } else if (snapshot.hasError) {
                     return _buildTimeOutExceptionWarning(snapshot);
                   } else {
-                    // TODO Create a new widget for this list
                     return Expanded(
                       child: Consumer<SeedProvider>(
                         builder: (context, seedProvider, _) {
