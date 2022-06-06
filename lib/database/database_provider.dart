@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:seed/database/seed_dao.dart';
+import 'package:seed/database/user_dao.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseProvider {
@@ -22,6 +23,7 @@ class DatabaseProvider {
     _db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(SeedDao().createTableQuery);
+      await db.execute(UserDao().createTableQuery);
     });
   }
 }
