@@ -37,9 +37,13 @@ class SeedsDatabaseRepository implements SeedsRepository {
 
   @override
   Future<void> update(DatabaseSeed seed) async {
-    final db = await databaseProvider.db();
-    await db.update(dao.tableName, dao.toMap(seed),
-        where: '${dao.columnId} = ?', whereArgs: [seed.id]);
+    try {
+      final db = await databaseProvider.db();
+      await db.update(dao.tableName, dao.toMap(seed),
+          where: '${dao.columnId} = ?', whereArgs: [seed.id]);
+    } catch (error) {
+      throw DbCannotInsertDataException();
+    }
   }
 
   @override
