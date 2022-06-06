@@ -178,7 +178,11 @@ class _SeedsScreenState extends State<SeedsScreen> {
                 .labelMedium!
                 .copyWith(color: Colors.black)),
         onChanged: (query) {
-          Provider.of<SeedProvider>(context, listen: false).searchSeeds(query);
+          try {
+            Provider.of<SeedProvider>(context, listen: false).searchSeeds(query);
+          } catch (error) {
+            showSnackBar(context, 'Não foi possível buscar sementes');
+          }
         },
       ),
     );
