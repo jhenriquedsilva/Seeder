@@ -13,8 +13,12 @@ class UsersDatabaseRepository implements UsersRepository {
 
   @override
   Future<void> clear() async {
-    final db = await databaseProvider.db();
-    await db.delete(dao.tableName);
+    try {
+      final db = await databaseProvider.db();
+      await db.delete(dao.tableName);
+    } catch (error) {
+      throw DbDoesNotClearTableException();
+    }
   }
 
   @override

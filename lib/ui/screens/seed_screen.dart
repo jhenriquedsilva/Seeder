@@ -105,45 +105,49 @@ class _SeedsScreenState extends State<SeedsScreen> {
       ),
       IconButton(
           onPressed: () async {
-            final areThereNonSynchronizedSeeds =
-                await Provider.of<SeedProvider>(context, listen: false)
-                    .areThereAnyNonSynchronized();
-            if (areThereNonSynchronizedSeeds) {
-              final isLoggingOut = await showDialog<bool>(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text(
-                    'Sementes não sincronizadas',
-                    style: TextStyle(color: Colors.black, fontSize: 24),
+            try {
+              final areThereNonSynchronizedSeeds =
+              await Provider.of<SeedProvider>(context, listen: false)
+                  .areThereAnyNonSynchronized();
+              if (areThereNonSynchronizedSeeds) {
+                final isLoggingOut = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text(
+                      'Sementes não sincronizadas',
+                      style: TextStyle(color: Colors.black, fontSize: 24),
+                    ),
+                    content: const Text(
+                        'Se você sair agora, perderá as sementes não sincronizadas'),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          child: const Text(
+                            'Sair',
+                            style: TextStyle(color: Colors.green),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: const Text('Sincronizar',
+                              style: TextStyle(color: Colors.green)))
+                    ],
                   ),
-                  content: const Text(
-                      'Se você sair agora, perderá as sementes não sincronizadas'),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        child: const Text(
-                          'Sair',
-                          style: TextStyle(color: Colors.green),
-                        )),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        child: const Text('Sincronizar',
-                            style: TextStyle(color: Colors.green)))
-                  ],
-                ),
-              );
+                );
 
-              if (isLoggingOut != null && isLoggingOut) {
-                await Provider.of<SeedProvider>(context, listen: false).clear();
-                await Provider.of<AuthProvider>(context, listen: false)
-                    .logout();
+                if (isLoggingOut != null && isLoggingOut) {
+                  await Provider.of<SeedProvider>(context, listen: false).clear();
+                  await Provider.of<AuthProvider>(context, listen: false)
+                      .logout();
+                }
+              } else {
+                await Provider.of<AuthProvider>(context, listen: false).logout();
               }
-            } else {
-              await Provider.of<AuthProvider>(context, listen: false).logout();
+            } catch (error) {
+              showSnackBar(context, error.toString());
             }
           },
           icon: const Icon(Icons.logout))
