@@ -1,5 +1,6 @@
 import 'package:seed/database/database_provider.dart';
 import 'package:seed/database/user_dao.dart';
+import 'package:seed/exceptions/db_cannot_insert_data_exception.dart';
 import 'package:seed/exceptions/db_does_not_clear_table_exception.dart';
 import 'package:seed/exceptions/db_does_not_load_data_exception.dart';
 import 'package:seed/models/user.dart';
@@ -36,8 +37,12 @@ class UsersDatabaseRepository implements UsersRepository {
 
   @override
   Future<void> insert(User user) async {
-    final db = await databaseProvider.db();
-    await db.insert(dao.tableName, dao.toMap(user),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    try {
+      final db = await databaseProvider.db();
+      await db.insert(dao.tableName, dao.toMap(user),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (error) {
+      throw DbCannotInsertDataException();
+    }
   }
 }
