@@ -33,7 +33,31 @@ class SeederDatabase {
     }, version: 1);
   }
 
-  Future<void> insert(DatabaseSeed databaseSeed) async {
+  Future<void> insertUser(User user) async {
+    final db = await _getInstance();
+
+    await db.insert(
+      'users',
+      user.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<User>> getUser() async {
+    final db = await _getInstance();
+
+    final List<Map<String, dynamic>> maps = await db.query('users');
+
+    return List.generate(
+        maps.length, (index) => User.fromJson(maps[index]));
+  }
+
+  Future<void> clearUser() async {
+    final db = await _getInstance();
+    await db.delete('users');
+  }
+
+  Future<void> insertSeed(DatabaseSeed databaseSeed) async {
     final db = await _getInstance();
 
     await db.insert(
