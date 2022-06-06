@@ -1,18 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:seed/database/seeder_database.dart';
 
-import 'package:seed/network/auth_service.dart';
 import 'package:seed/repository/auth_repository.dart';
 
 class AuthProvider with ChangeNotifier {
-  AuthProvider() {
-    _authRepository = AuthRepository(
-      AuthService(),
-      SeederDatabase()
-    );
-  }
+  AuthProvider(this._authRepository);
 
-  late AuthRepository _authRepository;
+  final AuthRepository _authRepository;
 
   var isLogin = true;
 
