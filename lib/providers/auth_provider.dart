@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
+import 'package:seed/database/seeder_database.dart';
 
 import 'package:seed/network/auth_service.dart';
-import 'package:seed/preferences/user_shared_preferences_service.dart';
-import 'package:seed/repository/authentication_repository.dart';
+import 'package:seed/repository/auth_repository.dart';
 
 class AuthProvider with ChangeNotifier {
   AuthProvider() {
     _authRepository = AuthRepository(
       AuthService(),
-      UserSharedPreferencesService(),
+      SeederDatabase()
     );
   }
 
@@ -17,8 +17,8 @@ class AuthProvider with ChangeNotifier {
   var isLogin = true;
 
   Future<bool> isAuthenticated() async {
-    final userId = await _authRepository.getId();
-    return userId != null;
+    final userList = await _authRepository.getUser();
+    return userList.isNotEmpty;
   }
 
   Future<void> login(String email) async {
