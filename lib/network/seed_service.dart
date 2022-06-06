@@ -21,8 +21,11 @@ class SeedService {
     'accept': 'application/json',
   };
 
-  Future<List<NetworkSeed>> fetch(String userId) async {
-    final url = Uri.parse('$baseUrl/$userId');
+  Future<List<NetworkSeed>> fetch() async {
+    final userList = await _seederDatabase.getUser();
+    final user = userList[0];
+    final url = Uri.parse('$baseUrl/${user.id}');
+
 
     try {
       // await Future.delayed(const Duration(seconds: 5,),() => throw TimeExceededException());
