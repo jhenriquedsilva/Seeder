@@ -24,7 +24,6 @@ class SeedService {
     final url = Uri.parse('$baseUrl/$userId');
 
     try {
-      // final response = await Future.delayed(const Duration(seconds: 5,),() => throw TimeExceededException());
       final response = await get(url).timeout(
         const Duration(seconds: 30),
         onTimeout: () => throw TimeExceededException(),
@@ -40,14 +39,14 @@ class SeedService {
           return NetworkSeed.fromJson(seedJson);
         }).toList();
       } else if (response.statusCode >= 400 && response.statusCode < 500) {
-        throw Exception('Um erro ocorreu. Tente novamente');
+        throw LocalException();
       } else if (response.statusCode == 503) {
         throw UnavailableServerException();
       } else {
-        throw Exception('Erro no servidor. Tente novamente mais tarde');
+        throw ServerException();
       }
     } on SocketException {
-      throw Exception('Você não possui internet');
+      throw NoInternetException();
     } catch (error) {
       rethrow;
     }
