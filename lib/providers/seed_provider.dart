@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:seed/database/seeder_database.dart';
 import 'package:seed/network/seed_service.dart';
-import 'package:seed/preferences/user_shared_preferences_service.dart';
 import 'package:seed/repository/seed_repository.dart';
 
 import '../models/database_seed.dart';
@@ -11,11 +10,12 @@ import '../models/seed.dart';
 
 class SeedProvider with ChangeNotifier {
   SeedProvider() {
+    final seederDatabase = SeederDatabase();
     _seedRepository = SeedRepository(
       SeedService(
-        UserSharedPreferencesService(),
+        seederDatabase,
       ),
-      SeederDatabase(),
+      seederDatabase,
     );
   }
 
