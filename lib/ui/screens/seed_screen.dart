@@ -24,7 +24,9 @@ class _SeedsScreenState extends State<SeedsScreen> {
         content: Text(
           message,
           textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }
@@ -100,7 +102,7 @@ class _SeedsScreenState extends State<SeedsScreen> {
           try {
             await Provider.of<SeedProvider>(context, listen: false)
                 .synchronize();
-            showSnackBar(context, 'Sementes sincronizadas com sucesso');
+            showSnackBar(context, 'Sementes sincronizadas');
           } on DbCannotInsertDataException {
             setState(() {});
           } on DbDoesNotLoadDataException {
