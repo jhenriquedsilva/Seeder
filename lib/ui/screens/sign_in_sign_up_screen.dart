@@ -25,10 +25,7 @@ class _SingInSignUpScreenState extends State<SingInSignUpScreen> {
                 children: [
                   Container(
                     margin: const EdgeInsets.all(16),
-                    child: Image.network(
-                      'https://play-lh.googleusercontent.com/'
-                          '3GIcAg0p2xsj-BuSEw2oima33RDarawUoJeWRWb'
-                          '-AIuq0Zxb5XwvckqRpONPSGodtUjh',
+                    child: Image.asset('assets/images/aegro-logo.png',
                       width: 200,
                       height: 200,
                       errorBuilder: (context, exception, stackTrace) {
