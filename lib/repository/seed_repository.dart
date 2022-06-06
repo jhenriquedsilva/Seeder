@@ -29,7 +29,7 @@ class SeedRepository {
   }
 
   Future<List<NetworkSeed>> _fetchRemoteSeeds() async {
-    return _seedService.fetch('6ab2456a-d5c5-4f05-a084-3d861fc8c02f');
+    return _seedService.fetch();
   }
 
   Future<void> _storeSeedsOnDatabase(List<NetworkSeed> networkSeeds) async {
