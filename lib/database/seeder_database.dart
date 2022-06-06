@@ -8,17 +8,17 @@ class SeederDatabase {
         join(
           await getDatabasesPath(),
           'seeder_database.db',
-        ), onCreate: (seedDatabase, version) {
-      return seedDatabase.execute(
+        ), onCreate: (seedDatabase, version) async {
+      await seedDatabase.execute(
         'CREATE TABLE seeds('
-            'id TEXT PRIMARY KEY, '
-            'name TEXT NOT NULL, '
-            'manufacturer TEXT NOT NULL, '
-            'manufacturedAt TEXT NOT NULL, '
-            'expiresIn TEXT NOT NULL, '
-            'createdAt TEXT NOT NULL, '
-            'synchronized INTEGER NOT NULL'
-            ')',
+        'id TEXT PRIMARY KEY, '
+        'name TEXT NOT NULL, '
+        'manufacturer TEXT NOT NULL, '
+        'manufacturedAt TEXT NOT NULL, '
+        'expiresIn TEXT NOT NULL, '
+        'createdAt TEXT NOT NULL, '
+        'synchronized INTEGER NOT NULL'
+        ')',
       );
     }, version: 1);
   }
