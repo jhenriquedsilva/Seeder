@@ -26,7 +26,7 @@ class SeedRepository {
       return [];
     }
     await _storeSeedsOnDatabase(networkSeeds);
-    return _fetchSeedsFromDatabase();
+    return getSeeds();
   }
 
   Future<List<NetworkSeed>> _fetchRemoteSeeds() async {
@@ -51,10 +51,6 @@ class SeedRepository {
         );
       },
     );
-  }
-
-  Future<List<DatabaseSeed>> _fetchSeedsFromDatabase() async {
-    return _seedsDatabaseRepository.getSeeds();
   }
 
   Future<List<DatabaseSeed>> getSeeds() async {
