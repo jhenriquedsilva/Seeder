@@ -1,3 +1,4 @@
+import 'package:seed/exceptions/db_does_not_clear_table_exception.dart';
 import 'package:seed/repository/seeds_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -21,8 +22,12 @@ class SeedsDatabaseRepository implements SeedsRepository {
 
   @override
   Future<void> clear() async {
-    final db = await databaseProvider.db();
-    await db.delete(dao.tableName);
+    try {
+      final db = await databaseProvider.db();
+      await db.delete(dao.tableName);
+    } catch (error) {
+      throw DbDoesNotClearTableException();
+    }
   }
 
   @override
