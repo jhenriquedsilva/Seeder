@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:seed/exceptions/server_exception.dart';
 import 'package:seed/exceptions/time_exceeded_exception.dart';
 import 'package:seed/exceptions/unavailable_server.dart';
+import 'package:seed/exceptions/local_exception.dart';
 
+import '../exceptions/no_internet_exception.dart';
 import '../models/network_seed.dart';
 import '../models/user.dart';
 
@@ -67,16 +70,16 @@ class SeedService {
           );
 
           if (response.statusCode >= 400 && response.statusCode < 500) {
-            throw Exception('Um erro ocorreu. Tente novamente');
+            throw LocalException();
           } else if (response.statusCode == 503) {
             throw UnavailableServerException();
-          } else {
-            throw Exception('Erro no servidor. Tente novamente mais tarde');
+          } else if (response.statusCode >= 500 && response.statusCode < 600){
+            throw ServerException();
           }
         },
       );
     } on SocketException {
-      throw Exception('Você não possui internet');
+      throw NoInternetException();
     } catch (error) {
       rethrow;
     }
