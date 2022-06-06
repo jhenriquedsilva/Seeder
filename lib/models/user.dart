@@ -16,4 +16,12 @@ class User {
       email: json['email'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'fullName': fullName,
+      'email': email,
+    };
+  }
 }
