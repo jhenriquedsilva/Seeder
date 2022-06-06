@@ -8,6 +8,7 @@ import 'package:seed/repository/seed_repository.dart';
 import 'package:seed/repository/seeds_database_repository.dart';
 import 'package:seed/repository/users_database_repository.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
+import 'package:seed/ui/screens/data_not_loading_screen.dart';
 import 'package:seed/ui/screens/sign_in_sign_up_screen.dart';
 import 'package:seed/ui/screens/seed_screen.dart';
 
@@ -24,9 +25,14 @@ void main() {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -84,6 +90,8 @@ class App extends StatelessWidget {
                   // TODO Create a splash screen
                   child: CircularProgressIndicator(),
                 );
+              } else if (snapshot.hasError) {
+                return DataNotLoadingScreen(setStateCallback: setState, snapshot: snapshot);
               } else {
                 final isAuthenticated = snapshot.data as bool;
 
@@ -101,3 +109,5 @@ class App extends StatelessWidget {
     );
   }
 }
+
+

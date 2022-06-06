@@ -1,5 +1,7 @@
 import 'package:seed/database/database_provider.dart';
 import 'package:seed/database/user_dao.dart';
+import 'package:seed/exceptions/db_does_not_clear_table_exception.dart';
+import 'package:seed/exceptions/db_does_not_load_data_exception.dart';
 import 'package:seed/models/user.dart';
 import 'package:seed/repository/users_repository.dart';
 import 'package:sqflite/sqflite.dart';
@@ -23,9 +25,13 @@ class UsersDatabaseRepository implements UsersRepository {
 
   @override
   Future<List<User>> getUsers() async {
-    final db = await databaseProvider.db();
-    List<Map<String, dynamic>> maps = await db.query(dao.tableName);
-    return dao.fromList(maps);
+    try {
+      final db = await databaseProvider.db();
+      List<Map<String, dynamic>> maps = await db.query(dao.tableName);
+      return dao.fromList(maps);
+    } catch (error) {
+      throw DbDoesNotLoadDataException();
+    }
   }
 
   @override
