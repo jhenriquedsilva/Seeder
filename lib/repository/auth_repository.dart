@@ -1,34 +1,33 @@
-import 'package:seed/database/seeder_database.dart';
+import 'package:seed/repository/users_database_repository.dart';
 
 import '../models/user.dart';
 import '../network/auth_service.dart';
 
 class AuthRepository {
   AuthRepository(
-    AuthService authService,
-    SeederDatabase seederDatabase,
-  )   : _authService = authService,
-        _seederDatabase = seederDatabase;
+    this._authService,
+    this._usersDatabaseRepository,
+  );
 
   final AuthService _authService;
-  final SeederDatabase _seederDatabase;
+  final UsersDatabaseRepository _usersDatabaseRepository;
 
   Future<void> login(String email) async {
     final user = await _authService.login(email);
-    await _seederDatabase.insertUser(user);
+    await _usersDatabaseRepository.insert(user);
   }
 
   Future<void> signup(String fullName, String email) async {
     final user = await _authService.signup(fullName, email);
-    await _seederDatabase.insertUser(user);
+    await _usersDatabaseRepository.insert(user);
   }
 
   Future<List<User>> getUser() async {
-    final userList = await _seederDatabase.getUser();
+    final userList = await _usersDatabaseRepository.getUsers();
     return userList;
   }
 
   Future<void> delete() async {
-    await _seederDatabase.clearUser();
+    await _usersDatabaseRepository.clear();
   }
 }
