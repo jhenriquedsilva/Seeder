@@ -77,14 +77,18 @@ class SeedsDatabaseRepository implements SeedsRepository {
 
   @override
   Future<List<DatabaseSeed>> searchSeeds(String query) async {
-    final db = await databaseProvider.db();
+    try {
+      final db = await databaseProvider.db();
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      dao.tableName,
-      where: '${dao.columnName} LIKE ? or ${dao.columnManufacturer} LIKE ?',
-      whereArgs: ['%$query%', '%$query%'],
-    );
+      final List<Map<String, dynamic>> maps = await db.query(
+        dao.tableName,
+        where: '${dao.columnName} LIKE ? or ${dao.columnManufacturer} LIKE ?',
+        whereArgs: ['%$query%', '%$query%'],
+      );
 
-    return List.generate(maps.length, (index) => dao.fromMap(maps[index]));
+      return List.generate(maps.length, (index) => dao.fromMap(maps[index]));
+    } catch (error) {
+      throw DbDoesNotLoadDataException();
+    }
   }
 }
