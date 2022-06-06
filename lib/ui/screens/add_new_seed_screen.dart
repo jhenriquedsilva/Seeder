@@ -288,8 +288,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                           child: child!);
                                     },
                                     context: context,
-                                    initialDate: _manufacturedAt!
-                                        .add(const Duration(days: 1)),
+                                    initialDate: DateTime.now(),
                                     firstDate: _manufacturedAt!
                                         .add(const Duration(days: 1)),
                                     lastDate: DateTime(
