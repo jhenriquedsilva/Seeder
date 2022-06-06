@@ -1,18 +1,18 @@
 import '../database/database_provider.dart';
-import '../models/seed.dart';
+import '../models/database_seed.dart';
 
 abstract class SeedsRepository {
   late DatabaseProvider databaseProvider;
 
-  Future<void> insert(Seed seed);
+  Future<void> insert(DatabaseSeed seed);
 
-  Future<void> update(Seed seed);
+  Future<void> update(DatabaseSeed seed);
 
-  Future<void> clear(Seed seed);
+  Future<void> clear();
 
-  Future<List<Seed>> getSeeds();
+  Future<List<DatabaseSeed>> getSeeds();
 
-  Future<List<Seed>> getNonSynchronizedSeeds();
+  Future<List<DatabaseSeed>> getNonSynchronizedSeeds();
 
-  Future<List<Seed>> searchSeeds(String query);
+  Future<List<DatabaseSeed>> searchSeeds(String query);
 }
