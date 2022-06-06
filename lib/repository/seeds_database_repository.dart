@@ -1,3 +1,4 @@
+import 'package:seed/exceptions/db_cannot_insert_data_exception.dart';
 import 'package:seed/exceptions/db_does_not_clear_table_exception.dart';
 import 'package:seed/repository/seeds_repository.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,9 +16,13 @@ class SeedsDatabaseRepository implements SeedsRepository {
 
   @override
   Future<void> insert(DatabaseSeed seed) async {
-    final db = await databaseProvider.db();
-    await db.insert(dao.tableName, dao.toMap(seed),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    try {
+      final db = await databaseProvider.db();
+      await db.insert(dao.tableName, dao.toMap(seed),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (error) {
+      throw DbCannotInsertDataException();
+    }
   }
 
   @override
