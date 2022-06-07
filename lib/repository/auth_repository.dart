@@ -13,20 +13,20 @@ class AuthRepository {
 
   Future<void> login(String email) async {
     final user = await _authService.login(email);
-    await _usersDatabaseRepository.insert(user);
+    await _userDao.insert(user);
   }
 
   Future<void> signup(String fullName, String email) async {
     final user = await _authService.signup(fullName, email);
-    await _usersDatabaseRepository.insert(user);
+    await _userDao.insert(user);
   }
 
   Future<List<User>> getUser() async {
-    final userList = await _usersDatabaseRepository.getUsers();
+    final userList = await _userDao.getUsers();
     return userList;
   }
 
   Future<void> delete() async {
-    await _usersDatabaseRepository.clear();
+    await _userDao.clear();
   }
 }
