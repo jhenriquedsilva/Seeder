@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:seed/exceptions/no_internet_exception.dart';
 import 'package:seed/exceptions/server_exception.dart';
@@ -39,7 +38,7 @@ class AuthService {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300){
-        return User.fromJson(json.decode(response.body));
+        return User.fromMap(json.decode(response.body));
 
       } else if (response.statusCode == 404) {
         throw EmailDoesNotExistException();
@@ -86,7 +85,7 @@ class AuthService {
       print(response.body);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        return User.fromJson(user);
+        return User.fromMap(user);
 
       } else if (response.statusCode == 400) {
         throw EmailNotValidException();
