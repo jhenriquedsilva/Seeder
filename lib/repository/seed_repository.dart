@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
+import 'package:seed/database/seed_dao.dart';
+import 'package:seed/mappers/standard_seed_mapper.dart';
 import 'package:seed/models/seed.dart';
-import 'package:seed/repository/seeds_database_repository.dart';
 import 'package:seed/repository/users_database_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,10 +14,14 @@ class SeedRepository {
   SeedRepository(
     this._seedService,
     this._usersDatabaseRepository,
+    this._seedDao,
+    this._seedMapper,
   );
 
   final SeedService _seedService;
   final UsersDatabaseRepository _usersDatabaseRepository;
+  final SeedDao _seedDao;
+  final StandardSeedMapper _seedMapper;
 
   Future<List<DatabaseSeed>> cacheSeeds() async {
     final networkSeeds = await _fetchRemoteSeeds();
