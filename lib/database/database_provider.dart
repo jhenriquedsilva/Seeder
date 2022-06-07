@@ -22,7 +22,7 @@ class DatabaseProvider {
 
     _db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-      await db.execute(SeedDao().createTableQuery);
+      await db.execute(SeedDao.createTable());
       await db.execute(UserDao().createTableQuery);
     });
   }
