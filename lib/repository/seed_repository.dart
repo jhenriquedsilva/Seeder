@@ -2,9 +2,9 @@ import 'package:intl/intl.dart';
 import 'package:seed/database/seed_dao.dart';
 import 'package:seed/mappers/standard_seed_mapper.dart';
 import 'package:seed/models/seed.dart';
-import 'package:seed/repository/users_database_repository.dart';
 import 'package:uuid/uuid.dart';
 
+import '../database/user_dao.dart';
 import '../exceptions/no_non_synchronized_seeds_exception.dart';
 import '../models/database_seed.dart';
 import '../models/network_seed.dart';
@@ -13,13 +13,13 @@ import '../network/seed_service.dart';
 class SeedRepository {
   SeedRepository(
     this._seedService,
-    this._usersDatabaseRepository,
+    this._userDao,
     this._seedDao,
     this._seedMapper,
   );
 
   final SeedService _seedService;
-  final UsersDatabaseRepository _usersDatabaseRepository;
+  final UserDao _userDao;
   final SeedDao _seedDao;
   final StandardSeedMapper _seedMapper;
 
@@ -33,7 +33,7 @@ class SeedRepository {
   }
 
   Future<List<NetworkSeed>> _fetchRemoteSeeds() async {
-    final users = await _usersDatabaseRepository.getUsers();
+    final users = await _userDao.getUsers();
     return _seedService.fetch(users[0].id);
   }
 
@@ -85,7 +85,7 @@ class SeedRepository {
     final networkSeeds = databaseSeedToNetworkSeed(
       nonSynchronizedDatabaseSeeds,
     );
-    final userList = await _usersDatabaseRepository.getUsers();
+    final userList = await _userDao.getUsers();
 
     await _seedService.send(userList[0], networkSeeds);
     final synchronizedDatabaseSeeds =
