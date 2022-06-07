@@ -149,10 +149,11 @@ class _SeedsScreenState extends State<SeedsScreen> {
 
                 if (isLoggingOut != null && isLoggingOut) {
                   await Provider.of<SeedProvider>(context, listen: false).clear();
-                  await Provider.of<AuthProvider>(context, listen: false)
-                      .logout();
+                  await Provider.of<AuthProvider>(context, listen: false).logout();
                 }
+
               } else {
+                await Provider.of<SeedProvider>(context, listen: false).clear();
                 await Provider.of<AuthProvider>(context, listen: false).logout();
               }
             } catch (error) {
