@@ -1,16 +1,15 @@
-import 'package:seed/repository/users_database_repository.dart';
-
+import '../database/user_dao.dart';
 import '../models/user.dart';
 import '../network/auth_service.dart';
 
 class AuthRepository {
   AuthRepository(
     this._authService,
-    this._usersDatabaseRepository,
+    this._userDao,
   );
 
   final AuthService _authService;
-  final UsersDatabaseRepository _usersDatabaseRepository;
+  final UserDao _userDao;
 
   Future<void> login(String email) async {
     final user = await _authService.login(email);
