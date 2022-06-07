@@ -12,12 +12,10 @@ import '../network/seed_service.dart';
 class SeedRepository {
   SeedRepository(
     this._seedService,
-    this._seedsDatabaseRepository,
     this._usersDatabaseRepository,
   );
 
   final SeedService _seedService;
-  final SeedsDatabaseRepository _seedsDatabaseRepository;
   final UsersDatabaseRepository _usersDatabaseRepository;
 
   Future<List<DatabaseSeed>> cacheSeeds() async {
@@ -38,23 +36,13 @@ class SeedRepository {
     await Future.forEach<NetworkSeed>(
       networkSeeds,
       (networkSeed) async {
-        await _seedsDatabaseRepository.insert(
-          DatabaseSeed(
-            id: networkSeed.id,
-            name: networkSeed.name,
-            manufacturer: networkSeed.manufacturer,
-            manufacturedAt: networkSeed.manufacturedAt,
-            expiresIn: networkSeed.expiresIn,
-            createdAt: networkSeed.createdAt,
-            synchronized: 1,
-          ),
-        );
+        await _seedDao.insert(_seedMapper.fromNetworkToDatabase(networkSeed));
       },
     );
   }
 
   Future<List<DatabaseSeed>> getSeeds() async {
-    return _seedsDatabaseRepository.getSeeds();
+    return _seedDao.getAll();
   }
 
   Future<void> insert(
@@ -78,12 +66,12 @@ class SeedRepository {
       synchronized: 0,
     );
 
-    await _seedsDatabaseRepository.insert(newSeed);
+    await _seedDao.insert(newSeed);
   }
 
   Future<void> synchronizeSeeds() async {
     final nonSynchronizedDatabaseSeeds =
-        await _seedsDatabaseRepository.getNonSynchronizedSeeds();
+        await _seedDao.getNonSynchronizedSeeds();
 
     if (nonSynchronizedDatabaseSeeds.isEmpty) {
       throw NoNonSynchronizedSeedsException();
@@ -109,7 +97,7 @@ class SeedRepository {
     await Future.forEach<DatabaseSeed>(
       synchronizedDatabaseSeeds,
       (databaseSeed) async {
-        await _seedsDatabaseRepository.update(databaseSeed);
+        await _seedDao.update(databaseSeed);
       },
     );
   }
@@ -131,18 +119,17 @@ class SeedRepository {
   }
 
   Future<void> clear() async {
-    await _seedsDatabaseRepository.clear();
+    await _seedDao.clear();
   }
 
   Future<bool> areThereAnyNonSynchronized() async {
     final nonSynchronizedDatabaseSeeds =
-        await _seedsDatabaseRepository.getNonSynchronizedSeeds();
+        await _seedDao.getNonSynchronizedSeeds();
     return nonSynchronizedDatabaseSeeds.isNotEmpty;
   }
 
   Future<List<Seed>> search(String query) async {
-    final selectedDatabaseSeeds =
-        await _seedsDatabaseRepository.searchSeeds(query);
+    final selectedDatabaseSeeds = await _seedDao.searchSeeds(query);
     return databaseSeedToSeed(selectedDatabaseSeeds);
   }
 
