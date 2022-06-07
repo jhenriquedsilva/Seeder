@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:seed/database/seed_dao.dart';
-import 'package:seed/mappers/standard_seed_mapper.dart';
 import 'package:seed/models/seed.dart';
 import 'package:uuid/uuid.dart';
 
 import '../database/user_dao.dart';
 import '../exceptions/no_non_synchronized_seeds_exception.dart';
+import '../mappers/seed_mapper.dart';
 import '../models/database_seed.dart';
 import '../models/network_seed.dart';
 import '../network/seed_service.dart';
@@ -21,7 +21,7 @@ class SeedRepository {
   final SeedService _seedService;
   final UserDao _userDao;
   final SeedDao _seedDao;
-  final StandardSeedMapper _seedMapper;
+  final SeedMapper _seedMapper;
 
   Future<List<DatabaseSeed>> cacheSeeds() async {
     final networkSeeds = await _fetchRemoteSeeds();
