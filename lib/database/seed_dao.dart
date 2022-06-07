@@ -1,58 +1,119 @@
+import 'package:sqflite/sqflite.dart';
+
+import '../exceptions/db_cannot_insert_data_exception.dart';
+import '../exceptions/db_does_not_clear_table_exception.dart';
+import '../exceptions/db_does_not_load_data_exception.dart';
 import '../models/database_seed.dart';
-import 'dao.dart';
+import 'database_provider.dart';
 
-class SeedDao implements Dao<DatabaseSeed> {
-  final tableName = 'seeds';
-  final columnId = 'id';
-  final columnName = 'name';
-  final columnManufacturer = 'manufacturer';
-  final _columnManufacturedAt = 'manufacturedAt';
-  final _columnExpiresIn = 'expiresIn';
-  final _columnCreatedAt = 'createdAt';
-  final columnSynchronized = 'synchronized';
+class SeedDao {
+  SeedDao(this.databaseProvider);
 
-  @override
-  String get createTableQuery => 'CREATE TABLE seeds('
-      '$columnId TEXT PRIMARY KEY, '
-      '$columnName TEXT NOT NULL, '
-      '$columnManufacturer TEXT NOT NULL, '
-      '$_columnManufacturedAt TEXT NOT NULL, '
-      '$_columnExpiresIn TEXT NOT NULL, '
-      '$_columnCreatedAt TEXT NOT NULL, '
-      '$columnSynchronized INTEGER NOT NULL'
-      ')';
+  final DatabaseProvider databaseProvider;
 
-  @override
-  DatabaseSeed fromMap(Map<String, dynamic> query) {
-    return DatabaseSeed(
-        id: query[columnId],
-        name: query[columnName],
-        manufacturer: query[columnManufacturer],
-        manufacturedAt: query[_columnManufacturedAt],
-        createdAt: query[_columnCreatedAt],
-        expiresIn: query[_columnExpiresIn],
-        synchronized: query[columnSynchronized]);
+  static const tableName = 'seeds';
+  static const columnId = 'id';
+  static const columnName = 'name';
+  static const columnManufacturer = 'manufacturer';
+  static const _columnManufacturedAt = 'manufacturedAt';
+  static const _columnExpiresIn = 'expiresIn';
+  static const _columnCreatedAt = 'createdAt';
+  static const columnSynchronized = 'synchronized';
+
+  static String createTable() {
+    return 'CREATE TABLE seeds('
+        '$columnId TEXT PRIMARY KEY, '
+        '$columnName TEXT NOT NULL, '
+        '$columnManufacturer TEXT NOT NULL, '
+        '$_columnManufacturedAt TEXT NOT NULL, '
+        '$_columnExpiresIn TEXT NOT NULL, '
+        '$_columnCreatedAt TEXT NOT NULL, '
+        '$columnSynchronized INTEGER NOT NULL'
+        ')';
   }
 
-  @override
-  Map<String, dynamic> toMap(DatabaseSeed seed) {
-    return <String, dynamic>{
-      columnId: seed.id,
-      columnName: seed.name,
-      columnManufacturer: seed.manufacturer,
-      _columnManufacturedAt: seed.manufacturedAt,
-      _columnExpiresIn: seed.expiresIn,
-      _columnCreatedAt: seed.createdAt,
-      columnSynchronized: seed.synchronized,
-    };
-  }
-
-  @override
-  List<DatabaseSeed> fromList(List<Map<String, dynamic>> query) {
-    List<DatabaseSeed> seeds = [];
-    for (Map<String, dynamic> map in query) {
-      seeds.add(fromMap(map));
+  Future<void> insert(DatabaseSeed seed) async {
+    try {
+      final db = await databaseProvider.db();
+      await db.insert(
+        tableName,
+        seed.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (error) {
+      throw DbCannotInsertDataException();
     }
-    return seeds;
+  }
+
+  Future<void> update(DatabaseSeed seed) async {
+    try {
+      final db = await databaseProvider.db();
+      await db.update(
+        tableName,
+        seed.toMap(),
+        where: '$columnId = ?',
+        whereArgs: [seed.id],
+      );
+    } catch (error) {
+      throw DbCannotInsertDataException();
+    }
+  }
+
+  Future<List<DatabaseSeed>> getAll() async {
+    try {
+      final db = await databaseProvider.db();
+      List<Map<String, dynamic>> maps = await db.query(tableName);
+      return List.generate(
+          maps.length, (index) => DatabaseSeed.fromMap(maps[index]));
+    } catch (error) {
+      throw DbDoesNotLoadDataException();
+    }
+  }
+
+  Future<List<DatabaseSeed>> getNonSynchronizedSeeds() async {
+    try {
+      final db = await databaseProvider.db();
+
+      final List<Map<String, dynamic>> maps = await db.query(
+        tableName,
+        where: '$columnSynchronized = ?',
+        whereArgs: [0],
+      );
+
+      return List.generate(
+        maps.length,
+        (index) => DatabaseSeed.fromMap(maps[index]),
+      );
+    } catch (error) {
+      throw DbDoesNotLoadDataException();
+    }
+  }
+
+  Future<List<DatabaseSeed>> searchSeeds(String query) async {
+    try {
+      final db = await databaseProvider.db();
+
+      final List<Map<String, dynamic>> maps = await db.query(
+        tableName,
+        where: '$columnName LIKE ? or $columnManufacturer LIKE ?',
+        whereArgs: ['%$query%', '%$query%'],
+      );
+
+      return List.generate(
+        maps.length,
+        (index) => DatabaseSeed.fromMap(maps[index]),
+      );
+    } catch (error) {
+      throw DbDoesNotLoadDataException();
+    }
+  }
+
+  Future<void> clear() async {
+    try {
+      final db = await databaseProvider.db();
+      await db.delete(tableName);
+    } catch (error) {
+      throw DbDoesNotClearTableException();
+    }
   }
 }
