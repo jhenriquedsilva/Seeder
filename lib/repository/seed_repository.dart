@@ -23,13 +23,36 @@ class SeedRepository {
   final SeedDao _seedDao;
   final SeedMapper _seedMapper;
 
-  Future<List<DatabaseSeed>> cacheSeeds() async {
+  Future<void> insert(
+    Map<String, dynamic> seedData,
+  ) async {
+
+    final seedId = const Uuid().v4().toString();
+    final createdAt = DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(
+      DateTime.now(),
+    );
+
+    final newSeed = DatabaseSeed(
+      id: seedId,
+      name: seedData['name'],
+      manufacturer: seedData['manufacturer'],
+      manufacturedAt: seedData['manufacturedAt'],
+      expiresIn: seedData['expiresIn'],
+      createdAt: createdAt,
+      synchronized: 0,
+    );
+
+    await _seedDao.insert(newSeed);
+  }
+
+  Future<List<Seed>> cacheSeeds() async {
     final networkSeeds = await _fetchRemoteSeeds();
     if (networkSeeds.isEmpty) {
       return [];
     }
     await _storeSeedsOnDatabase(networkSeeds);
-    return getSeeds();
+    final databaseSeeds = await _seedDao.getAll();
+    return _seedMapper.fromDatabaseToDomain(databaseSeeds);
   }
 
   Future<List<NetworkSeed>> _fetchRemoteSeeds() async {
@@ -40,38 +63,15 @@ class SeedRepository {
   Future<void> _storeSeedsOnDatabase(List<NetworkSeed> networkSeeds) async {
     await Future.forEach<NetworkSeed>(
       networkSeeds,
-      (networkSeed) async {
+          (networkSeed) async {
         await _seedDao.insert(_seedMapper.fromNetworkToDatabase(networkSeed));
       },
     );
   }
 
-  Future<List<DatabaseSeed>> getSeeds() async {
-    return _seedDao.getAll();
-  }
-
-  Future<void> insert(
-    String seedName,
-    String manufacturerName,
-    DateTime manufacturedAt,
-    DateTime expiresIn,
-  ) async {
-    final seedId = const Uuid().v4().toString();
-    final createdAt =
-        DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(DateTime.now());
-    final manufactured = DateFormat('yyyy-MM-dd').format(manufacturedAt);
-    final expired = DateFormat('yyyy-MM-dd').format(expiresIn);
-    final newSeed = DatabaseSeed(
-      id: seedId,
-      name: seedName,
-      manufacturer: manufacturerName,
-      manufacturedAt: manufactured,
-      expiresIn: expired,
-      createdAt: createdAt,
-      synchronized: 0,
-    );
-
-    await _seedDao.insert(newSeed);
+  Future<List<Seed>> getSeeds() async {
+    final databaseSeeds = await _seedDao.getAll();
+    return _seedMapper.fromDatabaseToDomain(databaseSeeds);
   }
 
   Future<void> synchronizeSeeds() async {
@@ -82,22 +82,25 @@ class SeedRepository {
       throw NoNonSynchronizedSeedsException();
     }
 
-    final networkSeeds = databaseSeedToNetworkSeed(
+    final networkSeeds = _seedMapper.fromDatabaseToNetwork(
       nonSynchronizedDatabaseSeeds,
     );
+
     final userList = await _userDao.getUsers();
 
     await _seedService.send(userList[0], networkSeeds);
-    final synchronizedDatabaseSeeds =
-        nonSynchronizedDatabaseSeeds.map((databaseSeed) => DatabaseSeed(
-              id: databaseSeed.id,
-              name: databaseSeed.name,
-              manufacturer: databaseSeed.manufacturer,
-              manufacturedAt: databaseSeed.manufacturedAt,
-              expiresIn: databaseSeed.expiresIn,
-              createdAt: databaseSeed.expiresIn,
-              synchronized: 1,
-            ));
+
+    final synchronizedDatabaseSeeds = nonSynchronizedDatabaseSeeds.map(
+      (databaseSeed) => DatabaseSeed(
+        id: databaseSeed.id,
+        name: databaseSeed.name,
+        manufacturer: databaseSeed.manufacturer,
+        manufacturedAt: databaseSeed.manufacturedAt,
+        expiresIn: databaseSeed.expiresIn,
+        createdAt: databaseSeed.expiresIn,
+        synchronized: 1,
+      ),
+    );
 
     await Future.forEach<DatabaseSeed>(
       synchronizedDatabaseSeeds,
@@ -105,26 +108,6 @@ class SeedRepository {
         await _seedDao.update(databaseSeed);
       },
     );
-  }
-
-  List<NetworkSeed> databaseSeedToNetworkSeed(
-      List<DatabaseSeed> databaseSeeds) {
-    return databaseSeeds
-        .map(
-          (databaseSeed) => NetworkSeed(
-            id: databaseSeed.id,
-            name: databaseSeed.name,
-            manufacturer: databaseSeed.manufacturer,
-            manufacturedAt: databaseSeed.manufacturedAt,
-            createdAt: databaseSeed.createdAt,
-            expiresIn: databaseSeed.expiresIn,
-          ),
-        )
-        .toList();
-  }
-
-  Future<void> clear() async {
-    await _seedDao.clear();
   }
 
   Future<bool> areThereAnyNonSynchronized() async {
@@ -135,22 +118,10 @@ class SeedRepository {
 
   Future<List<Seed>> search(String query) async {
     final selectedDatabaseSeeds = await _seedDao.searchSeeds(query);
-    return databaseSeedToSeed(selectedDatabaseSeeds);
+    return _seedMapper.fromDatabaseToDomain(selectedDatabaseSeeds);
   }
 
-  List<Seed> databaseSeedToSeed(List<DatabaseSeed> databaseSeeds) {
-    return databaseSeeds
-        .map(
-          (databaseSeed) => Seed(
-            id: databaseSeed.id,
-            name: databaseSeed.name,
-            manufacturer: databaseSeed.manufacturer,
-            manufacturedAt: DateTime.parse(databaseSeed.manufacturedAt),
-            expiresIn: DateTime.parse(databaseSeed.expiresIn),
-            createdAt: DateTime.parse(databaseSeed.createdAt),
-            synchronized: databaseSeed.synchronized,
-          ),
-        )
-        .toList();
+  Future<void> clear() async {
+    await _seedDao.clear();
   }
 }
