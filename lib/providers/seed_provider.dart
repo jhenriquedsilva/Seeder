@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:seed/repository/seed_repository.dart';
 
-import '../models/database_seed.dart';
 import '../models/seed.dart';
 
 class SeedProvider with ChangeNotifier {
@@ -34,8 +33,8 @@ class SeedProvider with ChangeNotifier {
   }
 
   Future<void> cacheSeeds() async {
-    final databaseSeeds = await _seedRepository.cacheSeeds();
-    if (databaseSeeds.isEmpty) {
+    final seeds = await _seedRepository.cacheSeeds();
+    if (seeds.isEmpty) {
       allSeeds = [];
       notifyListeners();
       return;
@@ -47,8 +46,8 @@ class SeedProvider with ChangeNotifier {
   }
 
   Future<void> getSeeds() async {
-    final databaseSeeds = await _seedRepository.getSeeds();
-    if (databaseSeeds.isEmpty) {
+    final seeds = await _seedRepository.getSeeds();
+    if (seeds.isEmpty) {
       allSeeds = [];
       notifyListeners();
       return;
