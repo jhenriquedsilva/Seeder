@@ -40,7 +40,6 @@ class SeedProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
-    final seeds = databaseSeedToSeed(databaseSeeds);
     seeds.sort((firstSeed, secondSeed) {
       return firstSeed.createdAt.compareTo(secondSeed.createdAt);
     });
@@ -54,42 +53,13 @@ class SeedProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
-    final seeds = databaseSeedToSeed(databaseSeeds);
+
     seeds.sort((firstSeed, secondSeed) {
       return firstSeed.createdAt.compareTo(secondSeed.createdAt);
     });
     allSeeds = seeds.reversed.toList();
 
     notifyListeners();
-  }
-
-  List<Seed> databaseSeedToSeed(List<DatabaseSeed> databaseSeeds) {
-    return databaseSeeds
-        .map(
-          (databaseSeed) => Seed(
-              id: databaseSeed.id,
-              name: databaseSeed.name,
-              manufacturer: databaseSeed.manufacturer,
-              manufacturedAt: DateTime.parse(databaseSeed.manufacturedAt),
-              expiresIn: DateTime.parse(databaseSeed.expiresIn),
-              createdAt: DateTime.parse(databaseSeed.createdAt),
-              synchronized: databaseSeed.synchronized),
-        )
-        .toList();
-  }
-
-  Future<void> insert(
-    String seedName,
-    String manufacturerName,
-    DateTime manufacturedAt,
-    DateTime expiresIn,
-  ) async {
-    await _seedRepository.insert(
-      seedName,
-      manufacturerName,
-      manufacturedAt,
-      expiresIn,
-    );
   }
 
   Future<void> synchronize() async {
