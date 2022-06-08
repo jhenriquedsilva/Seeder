@@ -1,4 +1,3 @@
-import 'package:seed/database/dao.dart';
 import 'package:seed/models/user.dart';
 import 'package:sqflite/sqflite.dart';
 
