@@ -29,7 +29,8 @@ class SeedRepository {
       return [];
     }
     await _storeSeedsOnDatabase(networkSeeds);
-    return getSeeds();
+    final databaseSeeds = await _seedDao.getAll();
+    return _seedMapper.fromDatabaseToDomain(databaseSeeds);
   }
 
   Future<List<NetworkSeed>> _fetchRemoteSeeds() async {
@@ -40,38 +41,15 @@ class SeedRepository {
   Future<void> _storeSeedsOnDatabase(List<NetworkSeed> networkSeeds) async {
     await Future.forEach<NetworkSeed>(
       networkSeeds,
-      (networkSeed) async {
+          (networkSeed) async {
         await _seedDao.insert(_seedMapper.fromNetworkToDatabase(networkSeed));
       },
     );
   }
 
-  Future<List<DatabaseSeed>> getSeeds() async {
-    return _seedDao.getAll();
-  }
-
-  Future<void> insert(
-    String seedName,
-    String manufacturerName,
-    DateTime manufacturedAt,
-    DateTime expiresIn,
-  ) async {
-    final seedId = const Uuid().v4().toString();
-    final createdAt =
-        DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(DateTime.now());
-    final manufactured = DateFormat('yyyy-MM-dd').format(manufacturedAt);
-    final expired = DateFormat('yyyy-MM-dd').format(expiresIn);
-    final newSeed = DatabaseSeed(
-      id: seedId,
-      name: seedName,
-      manufacturer: manufacturerName,
-      manufacturedAt: manufactured,
-      expiresIn: expired,
-      createdAt: createdAt,
-      synchronized: 0,
-    );
-
-    await _seedDao.insert(newSeed);
+  Future<List<Seed>> getSeeds() async {
+    final databaseSeeds = await _seedDao.getAll();
+    return _seedMapper.fromDatabaseToDomain(databaseSeeds);
   }
 
   Future<void> synchronizeSeeds() async {
@@ -82,7 +60,7 @@ class SeedRepository {
       throw NoNonSynchronizedSeedsException();
     }
 
-    final networkSeeds = databaseSeedToNetworkSeed(
+    final networkSeeds = _seedMapper.fromDatabaseToNetwork(
       nonSynchronizedDatabaseSeeds,
     );
     final userList = await _userDao.getUsers();
@@ -135,7 +113,7 @@ class SeedRepository {
 
   Future<List<Seed>> search(String query) async {
     final selectedDatabaseSeeds = await _seedDao.searchSeeds(query);
-    return databaseSeedToSeed(selectedDatabaseSeeds);
+    return _seedMapper.fromDatabaseToDomain(selectedDatabaseSeeds);
   }
 
   List<Seed> databaseSeedToSeed(List<DatabaseSeed> databaseSeeds) {
