@@ -23,7 +23,29 @@ class SeedRepository {
   final SeedDao _seedDao;
   final SeedMapper _seedMapper;
 
-  Future<List<DatabaseSeed>> cacheSeeds() async {
+  Future<void> insert(
+    Map<String, dynamic> seedData,
+  ) async {
+
+    final seedId = const Uuid().v4().toString();
+    final createdAt = DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(
+      DateTime.now(),
+    );
+
+    final newSeed = DatabaseSeed(
+      id: seedId,
+      name: seedData['name'],
+      manufacturer: seedData['manufacturer'],
+      manufacturedAt: seedData['manufacturedAt'],
+      expiresIn: seedData['expiresIn'],
+      createdAt: createdAt,
+      synchronized: 0,
+    );
+
+    await _seedDao.insert(newSeed);
+  }
+
+  Future<List<Seed>> cacheSeeds() async {
     final networkSeeds = await _fetchRemoteSeeds();
     if (networkSeeds.isEmpty) {
       return [];
