@@ -66,10 +66,6 @@ class SeedProvider with ChangeNotifier {
     await getSeeds();
   }
 
-  Future<void> clear() async {
-    await _seedRepository.clear();
-  }
-
   Future<bool> areThereAnyNonSynchronized() async {
     return _seedRepository.areThereAnyNonSynchronized();
   }
@@ -81,5 +77,9 @@ class SeedProvider with ChangeNotifier {
     });
     allSeeds = selectedSeeds.reversed.toList();
     notifyListeners();
+  }
+
+  Future<void> clear() async {
+    await _seedRepository.clear();
   }
 }
