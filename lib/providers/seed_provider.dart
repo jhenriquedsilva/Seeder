@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:seed/repository/seed_repository.dart';
 
 import '../models/database_seed.dart';
@@ -11,6 +12,26 @@ class SeedProvider with ChangeNotifier {
 
   final SeedRepository _seedRepository;
   late List<Seed> allSeeds;
+
+  Future<void> insert(
+      String seedName,
+      String manufacturerName,
+      DateTime manufacturedAt,
+      DateTime expiresIn,
+      ) async {
+    final seedData = {
+      'name': seedName,
+      'manufacturer': manufacturerName,
+      'manufacturedAt': DateFormat('yyyy-MM-dd').format(
+        manufacturedAt,
+      ),
+      'expiresIn': DateFormat('yyyy-MM-dd').format(
+        expiresIn,
+      ),
+    };
+
+    await _seedRepository.insert(seedData);
+  }
 
   Future<void> cacheSeeds() async {
     final databaseSeeds = await _seedRepository.cacheSeeds();
