@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 
 class DataNotLoadingScreen extends StatelessWidget {
   const DataNotLoadingScreen({
-    required void Function(void Function()) setStateCallback,
-    required AsyncSnapshot snapshot,
-  })  : _setStateCallback = setStateCallback,
-        _snapshot = snapshot;
+    required this.message,
+    required this.pressHandler,
+  });
 
-  final void Function(void Function()) _setStateCallback;
-  final AsyncSnapshot _snapshot;
+  final VoidCallback pressHandler;
+  final String message;
 
   @override
   Widget build(BuildContext context) {
