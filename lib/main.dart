@@ -102,7 +102,7 @@ class _AppState extends State<App> {
                 if (isAuthenticated) {
                   return const SeedsScreen();
                 } else {
-                  return const SingInSignUpScreen();
+                  return const SignInScreen();
                 }
               }
             },
@@ -118,5 +118,3 @@ class _AppState extends State<App> {
     );
   }
 }
-
-
