@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../validators/validator.dart';
 
 class InputForm extends StatefulWidget {
   const InputForm({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class InputForm extends StatefulWidget {
   State<InputForm> createState() => _InputFormState();
 }
 
-class _InputFormState extends State<InputForm> {
+class _InputFormState extends State<InputForm> with Validator {
   final GlobalKey<FormState> _formKey = GlobalKey();
   String? _userEmail;
   String? _userFullName;
@@ -102,7 +103,7 @@ class _InputFormState extends State<InputForm> {
                     ),
                     keyboardType: TextInputType.name,
                     validator: (name) {
-                      if (name == null || name.trim().isEmpty) {
+                      if (isNameNotValid(name)) {
                         return 'Informe seu nome completo';
                       }
                       return null;
@@ -146,15 +147,13 @@ class _InputFormState extends State<InputForm> {
                         borderSide: BorderSide(color: Colors.red, width: 2.0)),
                   ),
                   validator: (email) {
-                    final regex = RegExp(
-                        r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
-                    if (email == null || !regex.hasMatch(email)) {
+                    if (isEmailNotValid(email)) {
                       return 'Email inválido';
                     }
                     return null;
                   },
-                  onSaved: (userEmail) {
-                    _userEmail = userEmail as String;
+                  onSaved: (email) {
+                    _userEmail = email as String;
                   },
                 )
               ],
