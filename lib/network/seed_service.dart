@@ -1,31 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart';
-import 'package:seed/exceptions/server_exception.dart';
 import 'package:seed/exceptions/time_exceeded_exception.dart';
-import 'package:seed/exceptions/unavailable_server.dart';
-import 'package:seed/exceptions/local_exception.dart';
+import 'package:seed/network/http_sevice.dart';
 
-import '../exceptions/no_internet_exception.dart';
 import '../models/network_seed.dart';
 import '../models/user.dart';
 
-class SeedService {
-  final baseUrl =
-      'https://learning-data-sync-mobile.herokuapp.com/datasync/api/seed';
-  final headers = {
-    'content-type': 'application/json',
-    'accept': 'application/json',
-  };
-
+class SeedService extends HttpService {
   Future<List<NetworkSeed>> fetch(String userId) async {
-    final url = Uri.parse('$baseUrl/$userId');
-
     try {
+      final endpoint = '/seed/$userId';
+      await verifyInternetConnection();
+
+      final url = Uri.parse(baseUrl + endpoint);
       final response = await get(url).timeout(
-        const Duration(seconds: 30),
+        timeoutDuration,
         onTimeout: () => throw TimeExceededException(),
       );
 
@@ -35,27 +26,23 @@ class SeedService {
           return [];
         }
 
-        return fetchedSeeds.map((seedJson) {
-          return NetworkSeed.fromJson(seedJson);
-        }).toList();
-      } else if (response.statusCode >= 400 && response.statusCode < 500) {
-        throw LocalException();
-      } else if (response.statusCode == 503) {
-        throw UnavailableServerException();
+        return fetchedSeeds
+            .map((seedJson) => NetworkSeed.fromJson(seedJson))
+            .toList();
       } else {
-        throw ServerException();
+        throw createAppropriateException(response.statusCode);
       }
-    } on SocketException {
-      throw NoInternetException();
     } catch (error) {
       rethrow;
     }
   }
 
   Future<void> send(User user, List<NetworkSeed> networkSeeds) async {
-    final url = Uri.parse(baseUrl);
-
     try {
+      const endpoint = '/seed';
+      await verifyInternetConnection();
+
+      final url = Uri.parse(baseUrl + endpoint);
       await Future.forEach<NetworkSeed>(
         networkSeeds,
         (networkSeed) async {
@@ -64,21 +51,15 @@ class SeedService {
             body: networkSeed.toJson(user.id),
             headers: headers,
           ).timeout(
-            const Duration(seconds: 30),
+            timeoutDuration,
             onTimeout: () => throw TimeExceededException(),
           );
 
-          if (response.statusCode >= 400 && response.statusCode < 500) {
-            throw LocalException();
-          } else if (response.statusCode == 503) {
-            throw UnavailableServerException();
-          } else if (response.statusCode >= 500 && response.statusCode < 600){
-            throw ServerException();
+          if (response.statusCode < 200 || response.statusCode >= 300) {
+            throw createAppropriateException(response.statusCode);
           }
         },
       );
-    } on SocketException {
-      throw NoInternetException();
     } catch (error) {
       rethrow;
     }
