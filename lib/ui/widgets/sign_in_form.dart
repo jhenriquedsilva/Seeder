@@ -83,7 +83,9 @@ class _SignInFormState extends State<SignInForm> with Validator {
           ),
           CustomElevatedButton(
             text: 'ENTRAR',
-            pressHandler: _processUserInput,
+            pressHandler: () async {
+              await _processUserInput();
+            }
           ),
         ],
       ),

@@ -105,7 +105,9 @@ class _SignUpFormState extends State<SignUpForm> with Validator {
           ),
           CustomElevatedButton(
             text: 'CRIAR',
-            pressHandler: processUserInput,
+            pressHandler: () async {
+              await _processUserInput();
+            },
           )
         ],
       ),
