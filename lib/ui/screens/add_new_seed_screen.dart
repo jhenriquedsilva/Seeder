@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/providers/seed_provider.dart';
+import 'package:seed/validators/validator.dart';
 
 class AddNewSeedScreen extends StatefulWidget {
   const AddNewSeedScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class AddNewSeedScreen extends StatefulWidget {
   State<AddNewSeedScreen> createState() => _AddNewSeedScreenState();
 }
 
-class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
+class _AddNewSeedScreenState extends State<AddNewSeedScreen> with Validator {
   final GlobalKey<FormState> _formKey = GlobalKey();
   String? _seedName;
   String? _manufacturerName;
@@ -129,8 +130,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                 ),
                                 keyboardType: TextInputType.name,
                                 validator: (seedName) {
-                                  if (seedName == null ||
-                                      seedName.trim().isEmpty) {
+                                  if (isNameNotValid(seedName)) {
                                     return 'Você precisa informar o nome da semente';
                                   }
                                   return null;
@@ -184,8 +184,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                           color: Colors.red, width: 2.0)),
                                 ),
                                 validator: (manufacturerName) {
-                                  if (manufacturerName == null ||
-                                      manufacturerName.trim().isEmpty) {
+                                  if (isNameNotValid(manufacturerName)) {
                                     return 'Nome inválido';
                                   }
                                   return null;
