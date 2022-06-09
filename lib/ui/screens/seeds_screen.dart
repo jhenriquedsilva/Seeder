@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/exceptions/db_cannot_insert_data_exception.dart';
-import 'package:seed/providers/auth_provider.dart';
+import 'package:seed/providers/user_provider.dart';
 import 'package:seed/providers/seed_provider.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
+import 'package:seed/ui/screens/sign_in_screen.dart';
 
 import '../../exceptions/db_does_not_load_data_exception.dart';
 
 class SeedsScreen extends StatefulWidget {
-  static const routeName = '/seed';
+  static const routeName = '/seeds';
 
   const SeedsScreen({Key? key}) : super(key: key);
 
@@ -149,12 +150,15 @@ class _SeedsScreenState extends State<SeedsScreen> {
 
                 if (isLoggingOut != null && isLoggingOut) {
                   await Provider.of<SeedProvider>(context, listen: false).clear();
-                  await Provider.of<AuthProvider>(context, listen: false).logout();
+                  await Provider.of<UserProvider>(context, listen: false).clear();
+                  Navigator.of(context).pushReplacementNamed(SignInScreen.routeName);
                 }
 
               } else {
                 await Provider.of<SeedProvider>(context, listen: false).clear();
-                await Provider.of<AuthProvider>(context, listen: false).logout();
+                await Provider.of<UserProvider>(context, listen: false).clear();
+                Navigator.of(context).pushReplacementNamed(SignInScreen.routeName);
+
               }
             } catch (error) {
               showSnackBar(context, error.toString());
