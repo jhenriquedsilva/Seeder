@@ -107,7 +107,12 @@ class _AppState extends State<App> {
               }
             },
           ),
-          routes: {AddNewSeedScreen.routName: (_) => const AddNewSeedScreen()},
+          routes: {
+            SignInScreen.routeName: (_) => const SignInScreen(),
+            SignUpScreen.routeName: (_) => const SignUpScreen(),
+            SeedsScreen.routeName: (_) => const SeedsScreen(),
+            AddNewSeedScreen.routName: (_) => const AddNewSeedScreen(),
+          },
         ),
       ),
     );
