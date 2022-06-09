@@ -2,8 +2,8 @@ import '../database/user_dao.dart';
 import '../models/user.dart';
 import '../network/auth_service.dart';
 
-class AuthRepository {
-  AuthRepository(
+class UserRepository {
+  UserRepository(
     this._authService,
     this._userDao,
   );
