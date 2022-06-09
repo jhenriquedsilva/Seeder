@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
-import 'package:seed/ui/screens/sign_in_screen.dart';
+import 'package:seed/ui/widgets/logout_icon_button.dart';
+import 'package:seed/ui/widgets/seeds_dashboard.dart';
+import 'package:seed/ui/widgets/synchronize_icon_button.dart';
 
 import '../widgets/search_box.dart';
 
@@ -14,19 +16,6 @@ class SeedsScreen extends StatefulWidget {
 }
 
 class _SeedsScreenState extends State<SeedsScreen> {
-  void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +26,14 @@ class _SeedsScreenState extends State<SeedsScreen> {
           'Sementes',
           style: Theme.of(context).textTheme.headline4,
         ),
-        actions: _buildAppBarIconButtons(),
+        actions: [
+          SynchronizeIconButton(
+            errorHandler: () {
+              setState(() {});
+            },
+          ),
+          const LogoutIconButton()
+        ],
       ),
       body: GestureDetector(
         onTap: () {
