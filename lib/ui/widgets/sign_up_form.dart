@@ -22,34 +22,34 @@ class _SignUpFormState extends State<SignUpForm> with Validator {
 
   final _userFullNameTextEditingController = TextEditingController();
 
-  Future<void> processUserInput() async {
-    if (!isInputValid()) {
+  Future<void> _processUserInput() async {
+    if (!_isInputValid()) {
       return;
     }
-    saveInput();
-    await signUp();
+    _saveInput();
+    await _signUp();
   }
 
-  bool isInputValid() {
+  bool _isInputValid() {
     final isValid = _formKey.currentState?.validate();
     return isValid != null && isValid;
   }
 
-  void saveInput() {
+  void _saveInput() {
     _formKey.currentState?.save();
   }
 
-  void navigateToSeedScreen() {
+  void _navigateToSeedScreen() {
     Navigator.of(context).pushReplacementNamed(SeedsScreen.routeName);
   }
 
-  Future<void> signUp() async {
+  Future<void> _signUp() async {
     try {
       await Provider.of<UserProvider>(context, listen: false).signup(
         _userFullNameTextEditingController.text,
         _userEmailTextEditingController.text,
       );
-      navigateToSeedScreen();
+      _navigateToSeedScreen();
 
       UIUtils.showSnackBar(context, 'Conta criada com sucesso');
     } catch (error) {
@@ -57,11 +57,11 @@ class _SignUpFormState extends State<SignUpForm> with Validator {
     }
   }
 
-  void setUserEmail(String email) {
+  void _setUserEmail(String email) {
     _userEmailTextEditingController.text = email;
   }
 
-  void setUserFullName(String fullName) {
+  void _setUserFullName(String fullName) {
     _userFullNameTextEditingController.text = fullName;
   }
 
@@ -81,7 +81,7 @@ class _SignUpFormState extends State<SignUpForm> with Validator {
                   size: 40,
                 ),
                 CustomTextFormField(
-                  inputHandler: setUserFullName,
+                  inputHandler: _setUserFullName,
                   validator: validateName,
                 ),
               ],
@@ -97,7 +97,7 @@ class _SignUpFormState extends State<SignUpForm> with Validator {
                   size: 40,
                 ),
                 CustomTextFormField(
-                  inputHandler: setUserEmail,
+                  inputHandler: _setUserEmail,
                   validator: validateEmail,
                 ),
               ],

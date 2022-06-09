@@ -20,39 +20,39 @@ class _SignInFormState extends State<SignInForm> with Validator {
   String? _userEmail;
 
   Future<void> _processUserInput() async {
-    if (!isInputValid()) {
+    if (!_isInputValid()) {
       return;
     }
-    saveInput();
-    await signIn();
+    _saveInput();
+    await _signIn();
   }
 
-  bool isInputValid() {
+  bool _isInputValid() {
     final isValid = _formKey.currentState?.validate();
     return isValid != null && isValid;
   }
 
-  void saveInput() {
+  void _saveInput() {
     _formKey.currentState?.save();
   }
 
-  void navigateToSeedScreen() {
+  void _navigateToSeedScreen() {
     Navigator.of(context).pushReplacementNamed(SeedsScreen.routeName);
   }
 
-  Future<void> signIn() async {
+  Future<void> _signIn() async {
     try {
       await Provider.of<UserProvider>(context, listen: false).signIn(
         _userEmail as String,
       );
-      navigateToSeedScreen();
+      _navigateToSeedScreen();
 
     } catch (error) {
       UIUtils.showSnackBar(context, error.toString());
     }
   }
 
-  void setUserEmail(String email) {
+  void _setUserEmail(String email) {
     _userEmail = email;
   }
 
@@ -72,7 +72,7 @@ class _SignInFormState extends State<SignInForm> with Validator {
                   size: 40,
                 ),
                 CustomTextFormField(
-                  inputHandler: setUserEmail,
+                  inputHandler: _setUserEmail,
                   validator: validateEmail,
                 ),
               ],
