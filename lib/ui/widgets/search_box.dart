@@ -20,10 +20,7 @@ class SearchBox extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 borderSide: BorderSide(color: Colors.green, width: 2.0)),
             hintText: 'Buscar sementes...',
-            hintStyle: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(color: Colors.black)),
+            hintStyle: TextStyle(fontSize: 16, color: Colors.black)),
         onChanged: (query) {
           try {
             Provider.of<SeedProvider>(context, listen: false)
