@@ -1,16 +1,16 @@
 mixin Validator {
-  String? validateEmail(String? email) {
+  String? validateEmail(String? email, String errorMessage) {
     final regex = RegExp(
         r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
     if (email == null || !regex.hasMatch(email)) {
-      return 'Email inválido';
+      return errorMessage;
     }
     return null;
   }
 
-  String? validateName(String? name) {
+  String? validateName(String? name, String errorMessage) {
     if (name == null || name.trim().isEmpty) {
-      return 'Informe seu nome completo';
+      return errorMessage;
     }
     return null;
   }
