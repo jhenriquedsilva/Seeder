@@ -4,10 +4,14 @@ class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({
     required this.text,
     required this.pressHandler,
+    required this.color,
+    required this.width,
   });
 
   final String text;
-  final VoidCallback pressHandler;
+  final VoidCallback? pressHandler;
+  final Color color;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +20,16 @@ class CustomElevatedButton extends StatelessWidget {
         text,
         style: Theme.of(context).textTheme.button,
       ),
-      onPressed: () {
-        pressHandler();
-      },
+      onPressed: pressHandler != null
+          ? () {
+              pressHandler!();
+            }
+          : null,
       style: ElevatedButton.styleFrom(
-        primary: Colors.white,
+        primary: color,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        fixedSize: Size(MediaQuery.of(context).size.width * 0.7, 60),
+        fixedSize: Size(width, 60),
         elevation: 16,
-        shadowColor: Colors.green,
         shape: const StadiumBorder(),
       ),
     );
