@@ -234,7 +234,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                               },
                               context: context,
                               initialDate: DateTime.now(),
-                              firstDate: DateTime(DateTime.now().year - 1,
+                              firstDate: DateTime(DateTime.now().year - 50,
                                   DateTime.now().month, DateTime.now().day),
                               lastDate: DateTime.now(),
                             );
@@ -294,7 +294,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                                     firstDate: _manufacturedAt!
                                         .add(const Duration(days: 1)),
                                     lastDate: DateTime(
-                                      _manufacturedAt!.year + 10,
+                                      _manufacturedAt!.year + 50,
                                     ),
                                   );
 
