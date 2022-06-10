@@ -75,10 +75,6 @@ class _AppState extends State<App> {
                 fontSize: 32,
                 fontWeight: FontWeight.w900,
               ),
-              button: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900),
             ),
           ),
           home: FutureBuilder<bool>(
