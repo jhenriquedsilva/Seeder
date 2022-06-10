@@ -2,29 +2,41 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
-    required this.inputHandler,
-    required this.validator,
+    required this.cursorColor,
+    required this.borderColor,
+    required this.onSaveHandler,
+    required this.validationCallback,
+    required this.errorMessage,
+    required this.hintText,
+    required this.hintColor,
+    required this.inputType,
   });
 
-  final void Function(String) inputHandler;
-  final String? Function(String?) validator;
+  final Color cursorColor;
+  final Color borderColor;
+  final void Function(String) onSaveHandler;
+  final String? Function(String?, String) validationCallback;
+  final String errorMessage;
+  final String hintText;
+  final Color hintColor;
+  final TextInputType inputType;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      cursorColor: Colors.white,
-      style: Theme.of(context).textTheme.labelMedium,
+      cursorColor: cursorColor,
+      style: TextStyle(color: cursorColor, fontSize: 16,),
       textAlign: TextAlign.center,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: inputType,
       decoration: InputDecoration(
-        hintText: 'Informe seu email',
-        hintStyle: Theme.of(context).textTheme.labelMedium,
-        enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(color: Colors.white)),
-        focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            borderSide: BorderSide(color: Colors.white, width: 2.0)),
+        hintText: hintText,
+        hintStyle: TextStyle(color: hintColor, fontSize: 16),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(color: borderColor)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            borderSide: BorderSide(color: borderColor, width: 2.0)),
         errorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(color: Colors.red)),
@@ -32,9 +44,11 @@ class CustomTextFormField extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide(color: Colors.red, width: 2.0)),
       ),
-      validator: validator,
+      validator: (text) {
+        return validationCallback(text, errorMessage);
+      },
       onSaved: (userEmail) {
-        inputHandler(userEmail as String);
+        onSaveHandler(userEmail as String);
       },
     );
   }
