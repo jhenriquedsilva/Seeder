@@ -120,6 +120,8 @@ class _SignUpFormState extends State<SignUpForm> with Validator {
             pressHandler: () async {
               await _processUserInput();
             },
+            width: MediaQuery.of(context).size.width * 0.7,
+            color: Colors.white,
           )
         ],
       ),

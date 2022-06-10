@@ -84,14 +84,13 @@ class _SignInFormState extends State<SignInForm> with Validator {
               ],
             ),
           ),
-          const SizedBox(
-            height: 24,
-          ),
           CustomElevatedButton(
             text: 'ENTRAR',
             pressHandler: () async {
               await _processUserInput();
-            }
+            },
+            width: MediaQuery.of(context).size.width * 0.7,
+            color: Colors.white,
           ),
         ],
       ),
