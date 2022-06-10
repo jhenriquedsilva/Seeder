@@ -20,19 +20,36 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
   DateTime? _manufacturedAt;
   DateTime? _expiresIn;
 
-  Future<void> _submitData() async {
-    final isValid = _formKey.currentState?.validate();
-    if (isValid != null && !isValid) {
+  Future<void> _processUserInput() async {
+    if (!_isInputValid()) {
       return;
     }
 
-    if (_manufacturedAt == null || _expiresIn == null) {
+    if (_areDatesInvalid()) {
       UIUtils.showSnackBar(context, 'Selecione fabricação e validade');
       return;
     }
 
-    _formKey.currentState?.save();
+    _saveInput();
+    await _insertSeed();
+    goBackToSeedsScreen();
+    refreshSeeds();
+  }
 
+  bool _isInputValid() {
+    final isValid = _formKey.currentState?.validate();
+    return isValid != null && isValid;
+  }
+
+  bool _areDatesInvalid() {
+    return _manufacturedAt == null || _expiresIn == null;
+  }
+
+  void _saveInput() {
+    _formKey.currentState?.save();
+  }
+
+  Future<void> _insertSeed() async {
     try {
       await Provider.of<SeedProvider>(context, listen: false).insert(
         _seedName as String,
@@ -42,12 +59,60 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
       );
 
       UIUtils.showSnackBar(context, 'Semente cadastrada com sucesso');
-
-      Navigator.of(context).pop();
-      Provider.of<SeedProvider>(context, listen: false).getSeeds();
     } catch (error) {
       UIUtils.showSnackBar(context, error.toString());
     }
+  }
+
+  void goBackToSeedsScreen() {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> refreshSeeds() async {
+    await Provider.of<SeedProvider>(context, listen: false).getSeeds();
+  }
+
+  Future<void> processDatePickerInput(
+    DateTime firstDate,
+    DateTime lastDate,
+    bool isManufacturedAt,
+  ) async {
+    final date = await showCustomDatePicker(firstDate, lastDate);
+
+    if (date != null) {
+      setState(() {
+        if (isManufacturedAt) {
+          _manufacturedAt = date;
+        } else {
+          _expiresIn = date;
+        }
+      });
+    }
+  }
+
+  Future<DateTime?> showCustomDatePicker(
+      DateTime firstDate, DateTime lastDate) async {
+    return showDatePicker(
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme:
+                    ColorScheme.light(primary: Theme.of(context).primaryColor)),
+            child: child as Widget);
+      },
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+  }
+
+  void _setSeedName(String name) {
+    _seedName = name;
+  }
+
+  void _setManufacturerName(String name) {
+    _manufacturerName = name;
   }
 
   @override
