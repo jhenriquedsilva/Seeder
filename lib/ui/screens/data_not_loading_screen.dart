@@ -25,7 +25,7 @@ class DataNotLoadingScreen extends StatelessWidget {
                 Text(
                   message,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: const TextStyle(fontSize: 16),
                 ),
                 CustomElevatedButton(
                   text: 'Recarregar',
