@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/providers/seed_provider.dart';
+import 'package:seed/utils/UIUtils.dart';
 
 class AddNewSeedScreen extends StatefulWidget {
   const AddNewSeedScreen({Key? key}) : super(key: key);
@@ -19,19 +20,6 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
   DateTime? _manufacturedAt;
   DateTime? _expiresIn;
 
-  void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-    );
-  }
-
   Future<void> _submitData() async {
     final isValid = _formKey.currentState?.validate();
     if (isValid != null && !isValid) {
@@ -39,7 +27,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     }
 
     if (_manufacturedAt == null || _expiresIn == null) {
-      showSnackBar(context, 'Selecione fabricação e validade');
+      UIUtils.showSnackBar(context, 'Selecione fabricação e validade');
       return;
     }
 
@@ -53,12 +41,12 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
         _expiresIn as DateTime,
       );
 
-      showSnackBar(context, 'Semente cadastrada com sucesso');
+      UIUtils.showSnackBar(context, 'Semente cadastrada com sucesso');
 
       Navigator.of(context).pop();
       Provider.of<SeedProvider>(context, listen: false).getSeeds();
     } catch (error) {
-      showSnackBar(context, error.toString());
+      UIUtils.showSnackBar(context, error.toString());
     }
   }
 
