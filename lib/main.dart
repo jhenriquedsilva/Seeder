@@ -64,18 +64,6 @@ class _AppState extends State<App> {
           theme: ThemeData(
             primaryColor: const Color(0xff00c15a),
             fontFamily: 'OpenSans',
-            textTheme: const TextTheme(
-              headline6: TextStyle(
-                color: Colors.white,
-                fontSize: 48,
-                fontWeight: FontWeight.w900,
-              ),
-              headline4: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
           ),
           home: FutureBuilder<bool>(
             future: authProvider.isAuthenticated(),

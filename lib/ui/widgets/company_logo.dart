@@ -12,9 +12,13 @@ class CompanyLogo extends StatelessWidget {
         width: 200,
         height: 200,
         errorBuilder: (context, exception, stackTrace) {
-          return Text(
+          return const Text(
             'Aegro',
-            style: Theme.of(context).textTheme.headline6,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 48,
+              fontWeight: FontWeight.w900,
+            ),
           );
         },
       ),

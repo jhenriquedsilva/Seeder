@@ -22,9 +22,13 @@ class _SeedsScreenState extends State<SeedsScreen> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
+        title: const Text(
           'Sementes',
-          style: Theme.of(context).textTheme.headline4,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+          ),
         ),
         actions: [
           SynchronizeIconButton(

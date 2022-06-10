@@ -122,9 +122,13 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Adicionar',
-          style: Theme.of(context).textTheme.headline4,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+          ),
         ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
