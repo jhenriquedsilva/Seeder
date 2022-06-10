@@ -148,111 +148,54 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _manufacturedAt == null
-                            ? Icon(
-                                Icons.calendar_month,
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : Text(
-                                DateFormat('dd/MM/yyyy')
-                                    .format(_manufacturedAt as DateTime),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 22),
-                              ),
-                        ElevatedButton(
-                          child: const Text('Fabricação'),
-                          onPressed: () async {
-                            final date = await showDatePicker(
-                              builder: (context, child) {
-                                return Theme(
-                                    data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context)
-                                                .primaryColor)),
-                                    child: child!);
-                              },
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(DateTime.now().year - 50,
-                                  DateTime.now().month, DateTime.now().day),
-                              lastDate: DateTime.now(),
-                            );
-
-                            if (date != null) {
-                              setState(() {
-                                _manufacturedAt = date;
-                              });
-                            }
+                        DateLabel(
+                          date: _manufacturedAt,
+                        ),
+                        CustomElevatedButton(
+                          text: 'Fabricação',
+                          pressHandler: () async {
+                            await processDatePickerInput(
+                                DateTime(
+                                  DateTime.now().year - 50,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                ),
+                                DateTime.now(),
+                                true);
                           },
-                          style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(16),
-                            fixedSize: Size(
-                                MediaQuery.of(context).size.width * 0.4, 60),
-                            elevation: 16,
-                            shadowColor: Colors.green,
-                            shape: const StadiumBorder(),
-                          ),
+                          color: Theme.of(context).primaryColor,
+                          width: MediaQuery.of(context).size.width * 0.4,
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _expiresIn == null
-                            ? Icon(
-                                Icons.calendar_month,
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : Text(
-                                DateFormat('dd/MM/yyyy').format(_expiresIn as DateTime),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 22),
-                              ),
-                        ElevatedButton(
-                          child: const Text('Validade'),
-                          onPressed: _manufacturedAt != null
+                        DateLabel(
+                          date: _expiresIn,
+                        ),
+                        CustomElevatedButton(
+                          text: 'Validade',
+                          pressHandler: _manufacturedAt != null
                               ? () async {
-                                  final date = await showDatePicker(
-                                    builder: (context, child) {
-                                      return Theme(
-                                          data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context)
-                                                      .primaryColor)),
-                                          child: child!);
-                                    },
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: _manufacturedAt!
-                                        .add(const Duration(days: 1)),
-                                    lastDate: DateTime(
+                                  await processDatePickerInput(
+                                    DateTime(
+                                      _manufacturedAt!.year,
+                                      _manufacturedAt!.month,
+                                      _manufacturedAt!.day + 1,
+                                    ),
+                                    DateTime(
                                       _manufacturedAt!.year + 50,
                                     ),
+                                    false
                                   );
-
-                                  if (date != null) {
-                                    setState(() {
-                                      _expiresIn = date;
-                                    });
-                                  }
                                 }
                               : null,
-                          style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(16),
-                            fixedSize: Size(
-                                MediaQuery.of(context).size.width * 0.4, 60),
-                            elevation: 16,
-                            shadowColor: Colors.green,
-                            shape: const StadiumBorder(),
-                          ),
+                          color: Theme.of(context).primaryColor,
+                          width: MediaQuery.of(context).size.width * 0.4,
                         ),
                       ],
                     ),
