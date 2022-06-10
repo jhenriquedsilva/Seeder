@@ -10,6 +10,8 @@ class SeedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+
     return Card(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -23,64 +25,80 @@ class SeedItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 140,
-                  child: Text(
+            SizedBox(
+              width: screenSize.width * 0.25,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     seed.name,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.clip,
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                ),
-                SizedBox(
-                  width: 140,
-                  child: Text(
+                  Text(
                     seed.manufacturer,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.clip,
                     style: const TextStyle(
                       fontSize: 16,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      'Fabricado em: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(DateFormat('dd/MM/yyyy')
-                        .format(seed.manufacturedAt))
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text('Válida até: ',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(DateFormat('dd/MM/yyyy').format(seed.expiresIn))
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text('Registrada em: ',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(DateFormat('dd/MM/yyyy').format(seed.createdAt))
-                  ],
-                )
-              ],
+            SizedBox(
+              width: screenSize.width * 0.5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'Fabricação: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.clip,
+                      ),
+                      Text(
+                        DateFormat('dd/MM/yyyy').format(seed.manufacturedAt),
+                        overflow: TextOverflow.clip,
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Validade: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.clip,
+                      ),
+                      Text(
+                        DateFormat('dd/MM/yyyy').format(seed.expiresIn),
+                        overflow: TextOverflow.clip,
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Registrada: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.clip,
+                      ),
+                      Text(DateFormat('dd/MM/yyyy').format(seed.createdAt),
+                          overflow: TextOverflow.clip)
+                    ],
+                  )
+                ],
+              ),
             ),
-            Icon(
-              Icons.sync,
-              color: seed.synchronized == 1 ? Colors.green : Colors.red,
+            SizedBox(
+              width: screenSize.width * 0.05,
+              child: Icon(
+                Icons.sync,
+                color: seed.synchronized == 1 ? Colors.green : Colors.red,
+              ),
             )
           ],
         ),
