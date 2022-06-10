@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/providers/seed_provider.dart';
+import 'package:seed/ui/widgets/add_new_seed_form.dart';
+import 'package:seed/ui/widgets/custom_elevated_button.dart';
+import 'package:seed/ui/widgets/date_label.dart';
 import 'package:seed/utils/UIUtils.dart';
 
 class AddNewSeedScreen extends StatefulWidget {
@@ -136,126 +138,10 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
               margin: const EdgeInsets.only(top: 16),
               child: Column(
                 children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.nature,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: TextFormField(
-                                cursorColor: Theme.of(context).primaryColor,
-                                textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                  hintText: 'Nome da semente',
-                                  hintStyle: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).primaryColor,
-                                          width: 2.0)),
-                                  errorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide:
-                                          BorderSide(color: Colors.red)),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2.0)),
-                                ),
-                                keyboardType: TextInputType.name,
-                                validator: (seedName) {
-                                  if (seedName == null ||
-                                      seedName.trim().isEmpty) {
-                                    return 'Você precisa informar o nome da semente';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (seedName) {
-                                  _seedName = seedName as String;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.factory,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: TextFormField(
-                                cursorColor: Theme.of(context).primaryColor,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.name,
-                                decoration: InputDecoration(
-                                  hintText: 'Fabricante',
-                                  hintStyle: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).primaryColor,
-                                          width: 2.0)),
-                                  errorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide:
-                                          BorderSide(color: Colors.red)),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2.0)),
-                                ),
-                                validator: (manufacturerName) {
-                                  if (manufacturerName == null ||
-                                      manufacturerName.trim().isEmpty) {
-                                    return 'Nome inválido';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (manufacturerName) {
-                                  _manufacturerName =
-                                      manufacturerName as String;
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
+                  AddNewSeedForm(
+                    formKey: _formKey,
+                    onSaveSeedNameHandler: _setSeedName,
+                    onSaveManufacturerNameHandler: _setManufacturerName,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
