@@ -12,11 +12,11 @@ class SearchBox extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: TextField(
-        decoration: InputDecoration(
-            enabledBorder: const OutlineInputBorder(
+        decoration: const InputDecoration(
+            enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 borderSide: BorderSide(color: Colors.green)),
-            focusedBorder: const OutlineInputBorder(
+            focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 borderSide: BorderSide(color: Colors.green, width: 2.0)),
             hintText: 'Buscar sementes...',
