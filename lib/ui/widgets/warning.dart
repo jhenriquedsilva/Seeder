@@ -5,13 +5,10 @@ class Warning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text(
         'Não há sementes',
-        style: Theme.of(context)
-            .textTheme
-            .labelMedium!
-            .copyWith(color: Colors.black),
+        style: TextStyle(fontSize: 16, color: Colors.black),
         textAlign: TextAlign.center,
       ),
     );
