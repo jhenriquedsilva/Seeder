@@ -79,10 +79,6 @@ class _AppState extends State<App> {
                   color: Colors.black,
                   fontSize: 16,
                   fontWeight: FontWeight.w900),
-              labelMedium: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
             ),
           ),
           home: FutureBuilder<bool>(
