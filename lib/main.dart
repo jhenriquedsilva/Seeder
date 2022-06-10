@@ -7,10 +7,10 @@ import 'package:seed/providers/seed_provider.dart';
 import 'package:seed/repository/user_repository.dart';
 import 'package:seed/repository/seed_repository.dart';
 import 'package:seed/ui/screens/add_new_seed_screen.dart';
-import 'package:seed/ui/screens/data_not_loading_screen.dart';
 import 'package:seed/ui/screens/sign_in_screen.dart';
 import 'package:seed/ui/screens/seeds_screen.dart';
 import 'package:seed/ui/screens/sign_up_screen.dart';
+import 'package:seed/ui/widgets/home.dart';
 
 import 'database/database_provider.dart';
 import 'database/user_dao.dart';
@@ -38,6 +38,20 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
+      child: MaterialApp(
+          title: 'Seeder App',
+          theme: ThemeData(
+            primaryColor: const Color(0xff00c15a),
+            fontFamily: 'OpenSans',
+          ),
+          home: const Home(),
+          routes: {
+            SignInScreen.routeName: (_) => const SignInScreen(),
+            SignUpScreen.routeName: (_) => const SignUpScreen(),
+            SeedsScreen.routeName: (_) => const SeedsScreen(),
+            AddNewSeedScreen.routName: (_) => const AddNewSeedScreen(),
+          },
+        ),
       providers: [
         ChangeNotifierProvider(
           create: (_) => UserProvider(
@@ -58,46 +72,7 @@ class _AppState extends State<App> {
           ),
         )
       ],
-      child: Consumer<UserProvider>(
-        builder: (_, authProvider, __) => MaterialApp(
-          title: 'Seeder App',
-          theme: ThemeData(
-            primaryColor: const Color(0xff00c15a),
-            fontFamily: 'OpenSans',
-          ),
-          home: FutureBuilder<bool>(
-            future: authProvider.isAuthenticated(),
-            builder: (context, AsyncSnapshot<bool> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasError) {
-                return DataNotLoadingScreen(
-                  message: snapshot.error.toString(),
-                  pressHandler: () {
-                    setState(() {});
-                  },
-                );
-              } else {
-                final isAuthenticated = snapshot.data as bool;
-
-                if (isAuthenticated) {
-                  return const SeedsScreen();
-                } else {
-                  return const SignInScreen();
-                }
-              }
-            },
-          ),
-          routes: {
-            SignInScreen.routeName: (_) => const SignInScreen(),
-            SignUpScreen.routeName: (_) => const SignUpScreen(),
-            SeedsScreen.routeName: (_) => const SeedsScreen(),
-            AddNewSeedScreen.routName: (_) => const AddNewSeedScreen(),
-          },
-        ),
-      ),
     );
   }
 }
+
