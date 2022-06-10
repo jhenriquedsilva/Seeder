@@ -18,7 +18,11 @@ class CustomElevatedButton extends StatelessWidget {
     return ElevatedButton(
       child: Text(
         text,
-        style: Theme.of(context).textTheme.button,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 16,
+          fontWeight: FontWeight.w900,
+        ),
       ),
       onPressed: pressHandler != null
           ? () {
