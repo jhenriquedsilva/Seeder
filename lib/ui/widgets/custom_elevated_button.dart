@@ -7,7 +7,7 @@ class CustomElevatedButton extends StatelessWidget {
   });
 
   final String text;
-  final Future<void> Function() pressHandler;
+  final VoidCallback pressHandler;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +16,8 @@ class CustomElevatedButton extends StatelessWidget {
         text,
         style: Theme.of(context).textTheme.button,
       ),
-      onPressed: () async {
-        await pressHandler();
+      onPressed: () {
+        pressHandler();
       },
       style: ElevatedButton.styleFrom(
         primary: Colors.white,

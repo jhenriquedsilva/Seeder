@@ -90,12 +90,15 @@ class _AppState extends State<App> {
             builder: (context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
-                  // TODO Create a splash screen
                   child: CircularProgressIndicator(),
                 );
               } else if (snapshot.hasError) {
                 return DataNotLoadingScreen(
-                    setStateCallback: setState, snapshot: snapshot);
+                  message: snapshot.error.toString(),
+                  pressHandler: () {
+                    setState(() {});
+                  },
+                );
               } else {
                 final isAuthenticated = snapshot.data as bool;
 
