@@ -9,6 +9,7 @@ class UIUtils {
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.white),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }
