@@ -62,7 +62,11 @@ class SeedDao {
   Future<List<DatabaseSeed>> getAll() async {
     try {
       final db = await databaseProvider.db();
-      List<Map<String, dynamic>> maps = await db.query(tableName);
+      List<Map<String, dynamic>> maps = await db.query(
+        tableName,
+        orderBy: '$_columnCreatedAt DESC',
+      );
+
       return List.generate(
           maps.length, (index) => DatabaseSeed.fromMap(maps[index]));
     } catch (error) {
@@ -95,8 +99,9 @@ class SeedDao {
 
       final List<Map<String, dynamic>> maps = await db.query(
         tableName,
-        where: '$columnName LIKE ? or $columnManufacturer LIKE ?',
+        where: '$columnName LIKE ? OR $columnManufacturer LIKE ?',
         whereArgs: ['%$query%', '%$query%'],
+        orderBy: '$_columnCreatedAt DESC',
       );
 
       return List.generate(

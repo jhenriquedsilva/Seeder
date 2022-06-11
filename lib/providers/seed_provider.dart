@@ -13,11 +13,11 @@ class SeedProvider with ChangeNotifier {
   late List<Seed> allSeeds;
 
   Future<void> insert(
-      String seedName,
-      String manufacturerName,
-      DateTime manufacturedAt,
-      DateTime expiresIn,
-      ) async {
+    String seedName,
+    String manufacturerName,
+    DateTime manufacturedAt,
+    DateTime expiresIn,
+  ) async {
     final seedData = {
       'name': seedName,
       'manufacturer': manufacturerName,
@@ -39,10 +39,7 @@ class SeedProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
-    seeds.sort((firstSeed, secondSeed) {
-      return firstSeed.createdAt.compareTo(secondSeed.createdAt);
-    });
-    allSeeds = seeds.reversed.toList();
+    allSeeds = seeds;
   }
 
   Future<void> getSeeds() async {
@@ -52,12 +49,7 @@ class SeedProvider with ChangeNotifier {
       notifyListeners();
       return;
     }
-
-    seeds.sort((firstSeed, secondSeed) {
-      return firstSeed.createdAt.compareTo(secondSeed.createdAt);
-    });
-    allSeeds = seeds.reversed.toList();
-
+    allSeeds = seeds;
     notifyListeners();
   }
 
@@ -72,10 +64,7 @@ class SeedProvider with ChangeNotifier {
 
   Future<void> searchSeeds(String query) async {
     final selectedSeeds = await _seedRepository.search(query);
-    selectedSeeds.sort((firstSeed, secondSeed) {
-      return firstSeed.createdAt.compareTo(secondSeed.createdAt);
-    });
-    allSeeds = selectedSeeds.reversed.toList();
+    allSeeds = selectedSeeds;
     notifyListeners();
   }
 
