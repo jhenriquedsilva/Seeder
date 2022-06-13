@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:seed/repository/user_repository.dart';
+import 'package:seed/repositories/user_repository.dart';
 
 class UserProvider with ChangeNotifier {
   UserProvider(this._authRepository);

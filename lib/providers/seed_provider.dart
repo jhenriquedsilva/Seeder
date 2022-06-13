@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:seed/repository/seed_repository.dart';
+import 'package:seed/repositories/seed_repository.dart';
 
 import '../models/seed.dart';
 
