@@ -34,8 +34,8 @@ A lógica principal da aplicação se encontra no diretório lib. Nos subdiretó
 - UTILS,classes as quais possuem métodos utilizados em diversas partes da aplicação.
 - VALIDATORS, dispõem-se classes responsáveis por lógicas de validação, como validação de nome e email.
 - UI, estão as classes que mostram os dados aos usuários ou os coletam para armazenamento(screens são componentes que ocupam a tela inteira,
-- já os widgets são subpartes das telas, que foram criados para reaproveitamento de código, pois são utilizados mais de uma vez na mesma tela
-- ou em diferentes telas).
+já os widgets são subpartes das telas, que foram criados para reaproveitamento de código, pois são utilizados mais de uma vez na mesma tela
+ou em diferentes telas).
 
 ## Para conhecer mais sobre Flutter
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
