@@ -49,22 +49,4 @@ class StandardSeedMapper implements SeedMapper {
       synchronized: 1,
     );
   }
-
-  @override
-  Seed fromNetworkToDomain(NetworkSeed networkSeed) {
-    // TODO: implement fromNetworkToDomain
-    throw UnimplementedError();
-  }
-
-  @override
-  DatabaseSeed toDatabase(Seed seed) {
-    // TODO: implement toDatabase
-    throw UnimplementedError();
-  }
-
-  @override
-  NetworkSeed toNetwork(Seed seed) {
-    // TODO: implement toNetwork
-    throw UnimplementedError();
-  }
 }
