@@ -15,8 +15,8 @@ import 'package:seed/ui/widgets/home.dart';
 import 'database/database_provider.dart';
 import 'database/user_dao.dart';
 import 'mappers/standard_seed_mapper.dart';
-import 'network/auth_service.dart';
-import 'network/seed_service.dart';
+import 'network/user_http_service.dart';
+import 'network/seed_http_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,7 +56,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider(
           create: (_) => UserProvider(
             UserRepository(
-              AuthService(),
+              UserHttpService(),
               UserDao(DatabaseProvider.get),
             ),
           ),
@@ -64,7 +64,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider(
           create: (_) => SeedProvider(
             SeedRepository(
-              SeedService(),
+              SeedHttpService(),
               UserDao(DatabaseProvider.get),
               SeedDao(DatabaseProvider.get),
               StandardSeedMapper(),

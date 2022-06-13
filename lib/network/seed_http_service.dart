@@ -8,7 +8,7 @@ import 'package:seed/network/http_sevice.dart';
 import '../models/network_seed.dart';
 import '../models/user.dart';
 
-class SeedService extends HttpService {
+class SeedHttpService extends HttpService {
   Future<List<NetworkSeed>> fetch(String userId) async {
     try {
       final endpoint = '/seed/$userId';

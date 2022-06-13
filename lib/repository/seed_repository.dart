@@ -8,7 +8,7 @@ import '../exceptions/no_non_synchronized_seeds_exception.dart';
 import '../mappers/seed_mapper.dart';
 import '../models/database_seed.dart';
 import '../models/network_seed.dart';
-import '../network/seed_service.dart';
+import '../network/seed_http_service.dart';
 
 class SeedRepository {
   SeedRepository(
@@ -18,7 +18,7 @@ class SeedRepository {
     this._seedMapper,
   );
 
-  final SeedService _seedService;
+  final SeedHttpService _seedService;
   final UserDao _userDao;
   final SeedDao _seedDao;
   final SeedMapper _seedMapper;

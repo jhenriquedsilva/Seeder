@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../exceptions/time_exceeded_exception.dart';
 import '../models/user.dart';
 
-class AuthService extends HttpService {
+class UserHttpService extends HttpService {
   Future<User> login(String email) async {
     try {
       const endpoint = '/user/auth';
