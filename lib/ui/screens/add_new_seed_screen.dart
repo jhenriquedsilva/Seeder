@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:seed/providers/seed_provider.dart';
+import 'package:seed/ui/widgets/add_new_seed_form.dart';
+import 'package:seed/ui/widgets/custom_elevated_button.dart';
+import 'package:seed/ui/widgets/date_label.dart';
+import 'package:seed/utils/UIUtils.dart';
 
 class AddNewSeedScreen extends StatefulWidget {
   const AddNewSeedScreen({Key? key}) : super(key: key);
@@ -19,32 +22,36 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
   DateTime? _manufacturedAt;
   DateTime? _expiresIn;
 
-  void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-    );
+  Future<void> _processUserInput() async {
+    if (!_isInputValid()) {
+      return;
+    }
+
+    if (_areDatesInvalid()) {
+      UIUtils.showSnackBar(context, 'Selecione fabricação e validade');
+      return;
+    }
+
+    _saveInput();
+    await _insertSeed();
+    goBackToSeedsScreen();
+    refreshSeeds();
   }
 
-  Future<void> _submitData() async {
+  bool _isInputValid() {
     final isValid = _formKey.currentState?.validate();
-    if (isValid != null && !isValid) {
-      return;
-    }
+    return isValid != null && isValid;
+  }
 
-    if (_manufacturedAt == null || _expiresIn == null) {
-      showSnackBar(context, 'Selecione fabricação e validade');
-      return;
-    }
+  bool _areDatesInvalid() {
+    return _manufacturedAt == null || _expiresIn == null;
+  }
 
+  void _saveInput() {
     _formKey.currentState?.save();
+  }
 
+  Future<void> _insertSeed() async {
     try {
       await Provider.of<SeedProvider>(context, listen: false).insert(
         _seedName as String,
@@ -53,13 +60,61 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
         _expiresIn as DateTime,
       );
 
-      showSnackBar(context, 'Semente cadastrada com sucesso');
-
-      Navigator.of(context).pop();
-      Provider.of<SeedProvider>(context, listen: false).getSeeds();
+      UIUtils.showSnackBar(context, 'Semente cadastrada com sucesso');
     } catch (error) {
-      showSnackBar(context, error.toString());
+      UIUtils.showSnackBar(context, error.toString());
     }
+  }
+
+  void goBackToSeedsScreen() {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> refreshSeeds() async {
+    await Provider.of<SeedProvider>(context, listen: false).getSeeds();
+  }
+
+  Future<void> processDatePickerInput(
+    DateTime firstDate,
+    DateTime lastDate,
+    bool isManufacturedAt,
+  ) async {
+    final date = await showCustomDatePicker(firstDate, lastDate);
+
+    if (date != null) {
+      setState(() {
+        if (isManufacturedAt) {
+          _manufacturedAt = date;
+        } else {
+          _expiresIn = date;
+        }
+      });
+    }
+  }
+
+  Future<DateTime?> showCustomDatePicker(
+      DateTime firstDate, DateTime lastDate) async {
+    return showDatePicker(
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme:
+                    ColorScheme.light(primary: Theme.of(context).primaryColor)),
+            child: child as Widget);
+      },
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+  }
+
+  void _setSeedName(String name) {
+    _seedName = name;
+  }
+
+  void _setManufacturerName(String name) {
+    _manufacturerName = name;
   }
 
   @override
@@ -67,9 +122,13 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Adicionar',
-          style: Theme.of(context).textTheme.headline4,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+          ),
         ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -83,237 +142,64 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
               margin: const EdgeInsets.only(top: 16),
               child: Column(
                 children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.nature,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: TextFormField(
-                                cursorColor: Theme.of(context).primaryColor,
-                                textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                  hintText: 'Nome da semente',
-                                  hintStyle: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).primaryColor,
-                                          width: 2.0)),
-                                  errorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide:
-                                          BorderSide(color: Colors.red)),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2.0)),
-                                ),
-                                keyboardType: TextInputType.name,
-                                validator: (seedName) {
-                                  if (seedName == null ||
-                                      seedName.trim().isEmpty) {
-                                    return 'Você precisa informar o nome da semente';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (seedName) {
-                                  _seedName = seedName as String;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.factory,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: TextFormField(
-                                cursorColor: Theme.of(context).primaryColor,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.name,
-                                decoration: InputDecoration(
-                                  hintText: 'Fabricante',
-                                  hintStyle: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(color: Colors.black),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context).primaryColor,
-                                          width: 2.0)),
-                                  errorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide:
-                                          BorderSide(color: Colors.red)),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
-                                      borderSide: BorderSide(
-                                          color: Colors.red, width: 2.0)),
-                                ),
-                                validator: (manufacturerName) {
-                                  if (manufacturerName == null ||
-                                      manufacturerName.trim().isEmpty) {
-                                    return 'Nome inválido';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (manufacturerName) {
-                                  _manufacturerName =
-                                      manufacturerName as String;
-                                },
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
+                  AddNewSeedForm(
+                    formKey: _formKey,
+                    onSaveSeedNameHandler: _setSeedName,
+                    onSaveManufacturerNameHandler: _setManufacturerName,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _manufacturedAt == null
-                            ? Icon(
-                                Icons.calendar_month,
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : Text(
-                                DateFormat('dd/MM/yyyy')
-                                    .format(_manufacturedAt as DateTime),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 22),
-                              ),
-                        ElevatedButton(
-                          child: const Text('Fabricação'),
-                          onPressed: () async {
-                            final date = await showDatePicker(
-                              builder: (context, child) {
-                                return Theme(
-                                    data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context)
-                                                .primaryColor)),
-                                    child: child!);
-                              },
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(DateTime.now().year - 1,
-                                  DateTime.now().month, DateTime.now().day),
-                              lastDate: DateTime.now(),
-                            );
-
-                            if (date != null) {
-                              setState(() {
-                                _manufacturedAt = date;
-                              });
-                            }
+                        DateLabel(
+                          date: _manufacturedAt,
+                        ),
+                        CustomElevatedButton(
+                          text: 'Fabricação',
+                          pressHandler: () async {
+                            await processDatePickerInput(
+                                DateTime(
+                                  DateTime.now().year - 50,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                ),
+                                DateTime.now(),
+                                true);
                           },
-                          style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(16),
-                            fixedSize: Size(
-                                MediaQuery.of(context).size.width * 0.4, 60),
-                            elevation: 16,
-                            shadowColor: Colors.green,
-                            shape: const StadiumBorder(),
-                          ),
+                          color: Theme.of(context).primaryColor,
+                          width: MediaQuery.of(context).size.width * 0.4,
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _expiresIn == null
-                            ? Icon(
-                                Icons.calendar_month,
-                                color: Theme.of(context).primaryColor,
-                              )
-                            : Text(
-                                DateFormat('dd/MM/yyyy').format(_expiresIn as DateTime),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 22),
-                              ),
-                        ElevatedButton(
-                          child: const Text('Validade'),
-                          onPressed: _manufacturedAt != null
+                        DateLabel(
+                          date: _expiresIn,
+                        ),
+                        CustomElevatedButton(
+                          text: 'Validade',
+                          pressHandler: _manufacturedAt != null
                               ? () async {
-                                  final date = await showDatePicker(
-                                    builder: (context, child) {
-                                      return Theme(
-                                          data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context)
-                                                      .primaryColor)),
-                                          child: child!);
-                                    },
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: _manufacturedAt!
-                                        .add(const Duration(days: 1)),
-                                    lastDate: DateTime(
-                                      _manufacturedAt!.year + 10,
+                                  await processDatePickerInput(
+                                    DateTime(
+                                      _manufacturedAt!.year,
+                                      _manufacturedAt!.month,
+                                      _manufacturedAt!.day + 1,
                                     ),
+                                    DateTime(
+                                      _manufacturedAt!.year + 50,
+                                    ),
+                                    false
                                   );
-
-                                  if (date != null) {
-                                    setState(() {
-                                      _expiresIn = date;
-                                    });
-                                  }
                                 }
                               : null,
-                          style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(16),
-                            fixedSize: Size(
-                                MediaQuery.of(context).size.width * 0.4, 60),
-                            elevation: 16,
-                            shadowColor: Colors.green,
-                            shape: const StadiumBorder(),
-                          ),
+                          color: Theme.of(context).primaryColor,
+                          width: MediaQuery.of(context).size.width * 0.4,
                         ),
                       ],
                     ),
@@ -327,7 +213,7 @@ class _AddNewSeedScreenState extends State<AddNewSeedScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () async {
-          await _submitData();
+          await _processUserInput();
         },
         child: const Icon(Icons.check),
       ),
